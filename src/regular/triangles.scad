@@ -3,12 +3,12 @@
     ==========================================
     This module implements the tessellation of a plane using regular triangles,
     where each tile is congruent, and all vertex angles around a point sum to 360°.
-    
+
     Polygon properties:
     - Sides: 3
     - Interior Angle: 60°
     - Vertex Configuration: 3.3.3.3.3.3
-    
+
     Mathematically valid because the interior angle divides 360° exactly.
     Reference: Euclidean tessellation theory for regular polygons.
 */
@@ -29,28 +29,29 @@ include <../tessUtils.scad>;
  * @param levels Number of levels away from the center row.
  * @return       An array of center points for triangles.
  */
-function triangles_centers_lvls(side, levels) =
-    let(
-        // Vertical height of each triangle
-        vheight = side * sqrt(3) / 2,
-        // Generate rows symmetrically around the center
-        rows = [
-            for (i = [-(levels - 1) : (levels - 1)])
-                let(
-                    rowCount = (2 * levels - 1) - abs(i),         // Number of triangles in the row
-                    yOff = i * vheight,                         // Vertical offset for the row
-                    xStart = -(rowCount - 1) * side / 2          // Horizontal start to center the row
-                )
-                [ [xStart, yOff], rowCount ]
-        ]
-    )
-    // Generate center points for all rows
-    [
-        for (row = rows)
-            for (j = [0 : row[1] - 1])
-                [ row[0][0] + j * side, row[0][1] ]
-    ];
+function triangles_centers_lvls(side, levels) = let(
+    // Vertical height of each triangle
+    vheight = side * sqrt(3) / 2,
+    // Generate rows symmetrically around the center
+    rows0 = [for (i = [-ceil(levels / 2 - 1):ceil(levels / 2 - 1)])
+            let(rowCount = (levels - ((levels + 1) % 2)) - abs(i), // Number of triangles in the row
+                yOff = i * vheight,                                // Vertical offset for the row
+                xStart = -(rowCount - 1) * side / 2                // Horizontal start to center the row
+                ) [[xStart, yOff], rowCount]
 
+],
+    rows1 = (levels == 1) ? []
+                          : [for (i = [-(floor(levels / 2)):(floor(levels / 2 - 1))])
+                                    let(rowCount = (levels - ((levels) % 2)) - abs(i), // Number of triangles in the row
+                                        yOff = i * vheight + vheight / 2 -
+                                               (vheight - sqrt(3) / 3 * side) / 2, // Vertical offset for the row
+                                        xStart = -(rowCount - 1) * side / 2        // Horizontal start to center the row
+                                        ) [[xStart, yOff], rowCount]
+
+],
+    rows = concat(rows0, rows1))
+    // Generate center points for all rows
+    [for (row = rows) for (j = [0:row[1] - 1])[row[0][0] + j * side, row[0][1]]];
 
 //////////////////////////////////////////////////////
 // 2) FUNCTION TO GENERATE NxM TRIANGLE GRID POINTS //
@@ -66,18 +67,13 @@ function triangles_centers_lvls(side, levels) =
  * @param m    Number of rows (y-axis).
  * @return     An array of center points for triangles.
  */
-function triangles_centers_NxM(side, n, m) =
-    let(
-        vheight = side * sqrt(3) / 2 ,  // Vertical height of each triangle
-        col_shift = side / 2, // Horizontal shift for each column
-        row_shift = vheight,           // Horizontal shift for alternating rows
-        offset_shift = row_shift - (vheight-sqrt(3) / 3 * side)*2
-    )
-    [
-        for (j = [0 : m - 1], i = [0 : n - 1])
-            [ i * row_shift + (offset_shift * (j%2)), j * col_shift ]
-    ];
-
+function triangles_centers_NxM(side, n, m) = let(
+    vheight = side * sqrt(3) / 2, // Vertical height of each triangle
+    col_shift = side / 2,         // Horizontal shift for each column
+    row_shift = vheight,          // Horizontal shift for alternating rows
+    offset_shift = row_shift -
+                   (vheight - sqrt(3) / 3 * side) *
+                       2)[for (j = [0:m - 1], i = [0:n - 1])[i * row_shift + (offset_shift * (j % 2)), j *col_shift]];
 
 //////////////////////////////////////////////////////
 // 3) 2D MODULE: RENDER TRIANGLES AT GIVEN CENTERS  //
@@ -94,47 +90,50 @@ function triangles_centers_NxM(side, n, m) =
  * @param color_scheme  (Optional) Name of the color scheme for gradient.
  * @param alpha         (Optional) Alpha transparency value.
  */
-module triangles(side, spacing = 0, centers = [], levels = undef, n = undef, m = undef,
+module triangles(side, spacing = 0, centers = [], centers_type = undef, levels = undef, n = undef, m = undef,
                  color_scheme = undef, alpha = undef)
 {
     // Determine center points
-    if (len(centers) == 0 && !is_undef(levels)) {
+    if (len(centers) == 0 && !is_undef(levels))
+    {
         centers = triangles_centers_lvls(side, levels);
-    } else if (len(centers) == 0 && !is_undef(n) && !is_undef(m)) {
+    }
+    else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
+    {
         centers = triangles_centers_NxM(side, n, m);
-    } else if (len(centers) == 0) {
+    }
+    else if (len(centers) == 0)
+    {
         echo("No centers provided and 'levels' / (n,m) undefined for triangles.");
     }
 
+    is_lvls = centers_type == "levels" || levels != undef;
+
     // Bounding box for normalization
-    min_x = min([ for (c = centers) c[0] ]);
-    max_x = max([ for (c = centers) c[0] ]);
-    min_y = min([ for (c = centers) c[1] ]);
-    max_y = max([ for (c = centers) c[1] ]);
+    min_x = min([for (c = centers) c[0]]);
+    max_x = max([for (c = centers) c[0]]);
+    min_y = min([for (c = centers) c[1]]);
+    max_y = max([for (c = centers) c[1]]);
 
     // Draw each triangle
-    for (c = centers) {
+    for (c = centers)
+    {
         normalized_x = (c[0] - min_x) / (max_x - min_x + 1e-9);
         normalized_y = (c[1] - min_y) / (max_y - min_y + 1e-9);
-        color_val    = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        if (is_undef(color_scheme)) {
-            color_val = [0.9, 0.9, 0.9]; // Default grey
-        }
 
         // Derive the row index using the calculated vheight
-        vheight = side * sqrt(3) / 4;         // Vertical height of the triangle
-        row_index = floor(c[1] / vheight); // Correct row approximation
-        rot = row_index % 2 == 0 ? 0 : 60;   // Set rotation: 0 for even rows, 180 for odd rows
-        echo(row_index);
+        vheight = side * sqrt(3) / 4;                                               // Vertical height of the triangle
+        row_index = is_lvls ? floor(c[1] / vheight * 2) : floor(c[1] / (side / 2)); // Correct row approximation
+        rot = row_index % 2 == 0 ? 0 : 60; // Set rotation: 0 for even rows, 180 for odd rows
+        rot_lvls = is_lvls ? 30 : 0;
 
-        color(color_val, alpha = alpha)
-            translate([ c[0], c[1], 0 ])
-            rotate(30)
+        color_val =
+            !is_undef(color_scheme) ? get_gradient_color(normalized_x, normalized_y, color_scheme) : [ 0.9, 0.9, 0.9 ];
+
+        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) rotate(rot - rot_lvls)
             circle($fn = 3, r = (side - spacing) / sqrt(3));
     }
 }
-
 
 //////////////////////////////////////////////////////
 // 4) 3D MODULE: EXTRUDED TRIANGLES (PRISMS)        //
@@ -156,34 +155,38 @@ module trianglesSolid(side, height, spacing = 0, centers = [], levels = undef, n
                       color_scheme = undef, alpha = undef)
 {
     // Determine center points
-    if (len(centers) == 0 && !is_undef(levels)) {
+    if (len(centers) == 0 && !is_undef(levels))
+    {
         centers = triangles_centers_lvls(side, levels);
-    } else if (len(centers) == 0 && !is_undef(n) && !is_undef(m)) {
+    }
+    else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
+    {
         centers = triangles_centers_NxM(side, n, m);
-    } else if (len(centers) == 0) {
+    }
+    else if (len(centers) == 0)
+    {
         echo("No centers provided and 'levels' / (n,m) undefined for triangles.");
     }
 
     // Bounding box for normalization
-    min_x = min([ for (c = centers) c[0] ]);
-    max_x = max([ for (c = centers) c[0] ]);
-    min_y = min([ for (c = centers) c[1] ]);
-    max_y = max([ for (c = centers) c[1] ]);
+    min_x = min([for (c = centers) c[0]]);
+    max_x = max([for (c = centers) c[0]]);
+    min_y = min([for (c = centers) c[1]]);
+    max_y = max([for (c = centers) c[1]]);
 
     // Draw each extruded triangle
-    for (c = centers) {
+    for (c = centers)
+    {
         normalized_x = (c[0] - min_x) / (max_x - min_x + 1e-9);
         normalized_y = (c[1] - min_y) / (max_y - min_y + 1e-9);
-        color_val    = get_gradient_color(normalized_x, normalized_y, color_scheme);
+        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
 
-        if (is_undef(color_scheme)) {
-            color_val = [0.9, 0.9, 0.9];
+        if (is_undef(color_scheme))
+        {
+            color_val = [ 0.9, 0.9, 0.9 ];
         }
 
-        color(color_val, alpha = alpha)
-            translate([ c[0], c[1], 0 ])
-            rotate(30)
-            linear_extrude(height = height)
-                circle($fn = 3, r = (side - spacing) / sqrt(3));
+        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) rotate(30) linear_extrude(height = height)
+            circle($fn = 3, r = (side - spacing) / sqrt(3));
     }
 }

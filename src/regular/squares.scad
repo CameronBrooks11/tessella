@@ -30,31 +30,21 @@ include <../tessUtils.scad>;
  * @param levels Number of levels (rows above the center, plus the center, plus rows below).
  * @return       An array of center points for squares.
  */
-function squares_centers_lvls(side, levels) =
-    let(
-        // Offsets for spacing
-        offset_x = side, // Horizontal spacing
-        offset_y = side, // Vertical spacing
+function squares_centers_lvls(side, levels) = let(
+    // Offsets for spacing
+    offset_x = side, // Horizontal spacing
+    offset_y = side, // Vertical spacing
 
-        // Generate rows from the center outward
-        // Row i = -(levels-1) to +(levels-1), where i=0 is the center row.
-        rows = [
-            for (i = [-(levels - 1) : (levels - 1)]) 
-                let(
-                    rowCount = (2 * levels - 1) - abs(i), // Number of squares in the row
-                    yOff = i * offset_y,                 // Vertical position of the row
-                    xStart = -(rowCount - 1) * offset_x / 2 // Horizontal start to center the row
-                )
-                [ [xStart, yOff], rowCount ]
-        ]
-    )
+    // Generate rows from the center outward
+    // Row i = -(levels-1) to +(levels-1), where i=0 is the center row.
+    rows = [for (i = [-(levels - 1):(levels - 1)])
+            let(rowCount = (2 * levels - 1) - abs(i),   // Number of squares in the row
+                yOff = i * offset_y,                    // Vertical position of the row
+                xStart = -(rowCount - 1) * offset_x / 2 // Horizontal start to center the row
+                ) [[xStart, yOff], rowCount]
+])
     // For each row definition, generate square center points
-    [
-        for (row = rows)
-            for (j = [0 : row[1] - 1])
-                [ row[0][0] + j * offset_x, row[0][1] ]
-    ];
-
+    [for (row = rows) for (j = [0:row[1] - 1])[row[0][0] + j * offset_x, row[0][1]]];
 
 //////////////////////////////////////////////////////
 // 2) FUNCTION TO GENERATE NxM SQUARE GRID POINTS   //
@@ -71,15 +61,7 @@ function squares_centers_lvls(side, levels) =
  * @return     An array of center points for squares.
  */
 function squares_centers_NxM(side, n, m) =
-    let(
-        offset_x = side, 
-        offset_y = side
-    )
-    [ 
-      for (ix = [0 : n-1], iy = [0 : m-1]) 
-        [ ix*offset_x, iy*offset_y ]
-    ];
-
+    let(offset_x = side, offset_y = side)[for (ix = [0:n - 1], iy = [0:m - 1])[ix * offset_x, iy *offset_y]];
 
 //////////////////////////////////////////////////////
 // 3) 2D MODULE: RENDER SQUARES AT GIVEN CENTERS    //
@@ -96,8 +78,8 @@ function squares_centers_NxM(side, n, m) =
  * @param color_scheme  (Optional) Name of the color scheme for gradient.
  * @param alpha         (Optional) Alpha transparency value.
  */
-module squares(side, spacing = 0, centers = [], levels = undef, n = undef, m = undef,
-               color_scheme = undef, alpha = undef)
+module squares(side, spacing = 0, centers = [], levels = undef, n = undef, m = undef, color_scheme = undef,
+               alpha = undef)
 {
     // Determine center points if not provided
     if (len(centers) == 0 && !is_undef(levels))
@@ -131,12 +113,9 @@ module squares(side, spacing = 0, centers = [], levels = undef, n = undef, m = u
             color_val = [ 0.9, 0.9, 0.9 ]; // Default grey
         }
 
-        color(color_val, alpha = alpha)
-            translate([ c[0], c[1], 0 ])
-            square(side - spacing, center = true);
+        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) square(side - spacing, center = true);
     }
 }
-
 
 //////////////////////////////////////////////////////
 // 4) 3D MODULE: EXTRUDED SQUARES (PRISMS)          //
@@ -154,8 +133,8 @@ module squares(side, spacing = 0, centers = [], levels = undef, n = undef, m = u
  * @param color_scheme  (Optional) Name of the color scheme for gradient.
  * @param alpha         (Optional) Alpha transparency value.
  */
-module squaresSolid(side, height, spacing = 0, centers = [], levels = undef, n = undef, m = undef,
-                    color_scheme = undef, alpha = undef)
+module squaresSolid(side, height, spacing = 0, centers = [], levels = undef, n = undef, m = undef, color_scheme = undef,
+                    alpha = undef)
 {
     // Determine center points if not provided
     if (len(centers) == 0 && !is_undef(levels))
@@ -189,9 +168,7 @@ module squaresSolid(side, height, spacing = 0, centers = [], levels = undef, n =
             color_val = [ 0.9, 0.9, 0.9 ]; // Default grey
         }
 
-        color(color_val, alpha = alpha)
-            translate([ c[0], c[1], 0 ])
-            linear_extrude(height = height)
-                square(side - spacing, center = true);
+        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) linear_extrude(height = height)
+            square(side - spacing, center = true);
     }
 }

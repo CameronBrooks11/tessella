@@ -1,3 +1,4 @@
+EPSILON = 1e-3; ///< Tolerance value used for floating-point comparisons.
 
 /**
  * @brief Generates a gradient color based on normalized coordinates and a color scheme.
@@ -51,3 +52,57 @@ module print_points(points, text_size = 1, color = [ 0.1, 0.1, 0.1 ], pointD = u
         }
     }
 }
+
+/**
+ * @brief Checks if two points are equal within a specified tolerance.
+ *
+ * @param p1 First point as [x, y].
+ * @param p2 Second point as [x, y].
+ * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
+ * @return True if points are equal within tolerance, false otherwise.
+ */
+function points_equal(p1, p2, tolerance = EPSILON) = let(comparisons = [for (i = [0:len(p1) - 1]) abs(p1[i] - p2[i]) <
+                                                             tolerance])
+                                                     // Check if all comparisons are true
+                                                     len([for (comp = comparisons) if (comp) true]) == len(comparisons);
+
+
+/**
+ * @brief Checks if a point exists within a list of points, within a specified tolerance.
+ *
+ * @param point The point to check, as [x, y].
+ * @param list The list of points to search within.
+ * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
+ * @return True if the point exists in the list within tolerance, false otherwise.
+ */
+function is_point_in_list(point, list,
+                          tolerance = EPSILON) = let(equal_points = [for (p = list) points_equal(p, point, tolerance)])
+                                                     len([for (eq = equal_points) if (eq) true]) > 0;
+
+
+/**
+ * @brief Filters out centers that are present in a filter list.
+ *
+ * Removes centers from the provided list that match any in the filter_list, within a specified tolerance.
+ *
+ * @param centers An array of centers to be filtered.
+ * @param filter_list An array of centers to filter out.
+ * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
+ * @return A filtered array of centers.
+ */
+function filter_center_points(centers, filter_list, tolerance = EPSILON) =
+    [for (center = centers) if (!is_point_in_list(center, filter_list, tolerance)) center];
+
+/**
+ * @brief Filters out points from centers that are within a radius of points in the filter list.
+ *
+ * Useful for removing points that are too close to certain areas or features.
+ *
+ * @param r The radius within which to filter out points.
+ * @param centers An array of centers to be filtered.
+ * @param filter_list An array of points to filter against.
+ * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
+ * @return A filtered array of centers.
+ */
+function filter_triangulated_center_points(r, centers, filter_list, tolerance = EPSILON) = let(
+    n = len(centers))[for (i = [0:n - 1]) if (!is_within_radius(centers[i], r + tolerance, filter_list)) centers[i]];

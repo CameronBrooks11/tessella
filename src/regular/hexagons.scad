@@ -3,12 +3,12 @@
     =========================================
     This module implements the tessellation of a plane using regular hexagons,
     where each tile is congruent, and all vertex angles around a point sum to 360°.
-    
+
     Polygon properties:
     - Sides: 6
     - Interior Angle: 120°
     - Vertex Configuration: 6.6.6
-    
+
     Mathematically valid because the interior angle divides 360° exactly.
     Reference: Euclidean tessellation theory for regular polygons.
 */
