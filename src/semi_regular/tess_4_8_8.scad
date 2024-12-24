@@ -4,21 +4,16 @@
     This module implements the tessellation of a plane using a semi-regular tiling
     pattern defined by the vertex configuration 4.8.8, where one square and two
     octagons meet at each vertex.
-    
+
     Tiling properties:
     - Polygons used: squares (4 sides), octagons (8 sides)
     - Vertex Configuration: 4.8.8
     - Angle Sum at Vertex: 360° (valid for Euclidean tiling).
-    
+
     Reference: Euclidean tessellation theory for semi-regular tilings.
 */
 
-
 include <../tessUtils.scad>;
-
-
-
-
 
 /**
  * @brief Generates center points for an octagonal grid.
@@ -41,7 +36,6 @@ function octagon_centers_grid(radius, n, m, rotate = true) =
         // Function to generate grid points
         generate_grid_points = function(n, m, step)[for (i = [0:n - 1], j = [0:m - 1])[i * step, j *step]])
         generate_grid_points(n, m, total_width);
-
 
 /**
  * @brief Renders octagons at specified centers with optional color gradient.

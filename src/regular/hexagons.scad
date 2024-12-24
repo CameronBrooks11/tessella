@@ -106,7 +106,7 @@ module hexagons(radius, spacing = 0, hexagon_centers = [], levels = undef, n = u
     }
     else if (len(hexagon_centers) == 0)
     {
-        echo("No hexagon centers provided and 'levels' is undefined.");
+        echo("No hexagon centers provided and 'levels' & 'n' x 'm' is undefined.");
     }
 
     // Determine the range of the center points for normalization
