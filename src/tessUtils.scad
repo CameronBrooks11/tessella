@@ -24,7 +24,6 @@ function get_gradient_color(normalized_x, normalized_y, color_scheme) =
                                   : // Orange to Blue
         [ 0.9, 0.9, 0.9 ];          // Default color (grey) if no valid color scheme is provided
 
-
 /**
  * @brief Renders points as text labels and optional spheres in the 3D space.
  *
@@ -43,12 +42,12 @@ module print_points(points, text_size = 1, color = [ 0.1, 0.1, 0.1 ], pointD = u
     for (point = points)
     {
         // Translate +1 in Z-axis to avoid z-fighting with the surface
-        translate([ point[0], point[1], 1 ]) color(color)
+        translate([ point[0], point[1] + pointD * 2, pointD * 2 ]) color(color)
             text(str("[", point[0], ", ", point[1], "]"), size = text_size, valign = "center", halign = "center");
         if (pointD != undef)
         {
             // Place a sphere at the point if pointD is specified
-            color(point_color) translate([ point[0], point[1], 1 ]) sphere(pointD, $fn = fn);
+            color(point_color) translate([ point[0], point[1], 0 ]) sphere(pointD, $fn = fn);
         }
     }
 }
@@ -66,7 +65,6 @@ function points_equal(p1, p2, tolerance = EPSILON) = let(comparisons = [for (i =
                                                      // Check if all comparisons are true
                                                      len([for (comp = comparisons) if (comp) true]) == len(comparisons);
 
-
 /**
  * @brief Checks if a point exists within a list of points, within a specified tolerance.
  *
@@ -78,7 +76,6 @@ function points_equal(p1, p2, tolerance = EPSILON) = let(comparisons = [for (i =
 function is_point_in_list(point, list,
                           tolerance = EPSILON) = let(equal_points = [for (p = list) points_equal(p, point, tolerance)])
                                                      len([for (eq = equal_points) if (eq) true]) > 0;
-
 
 /**
  * @brief Filters out centers that are present in a filter list.
