@@ -1,10 +1,10 @@
 use <../../tess.scad>
 
-rad = 10;
-space = 1;
-lvls = 5;
-extHeight = 10;
-filter = true;
+lvls = 5;       // Number of 'levels' in the radial tessellation
+rad = 10;       // Radius of hexagons
+space = 1;      // Spacing between hexagons
+extHeight = 10; // Extrusion height for hexagons
+filter = true;  // Enable or disable filtering
 
 unfiltered_centers = hexagon_centers_radial(radius = rad, levels = lvls);
 echo("Unfiltered Centers:", unfiltered_centers);
@@ -21,10 +21,13 @@ echo("Filtered Centers:", filtered_centers);
 // Use the filtered centers if filtering is enabled
 centers = filter ? filtered_centers : centers;
 
+// Generate vertices for the hexagons
 vertices = filter ? hexagon_vertices(radius = rad - space, centers = filtered_centers, angular_offset = 30)
                   : hexagon_vertices(radius = rad - space, centers = centers, angular_offset = 30);
 
+// Render the hexagons
 hexagon_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
 
+// Render points for debugging and visualization of the center points and their filtering
 translate([ 0, 0, extHeight ])
     print_points(centers, text_size = 3 / 2, color = "Black", pointD = 0.5, point_color = "Red", fn = 12);
