@@ -53,7 +53,7 @@ oct_vertices = octagons_vertices(radius = radius - spacing, centers = oct_center
 side_length = (radius * 2) / (sqrt(4 + 2 * sqrt(2)));
 
 // Generate vertices for the squares
-square_vertices = squares_vertices(side = side_length - spacing, centers = sq_centers);
+square_vertices = squares_vertices(side = side_length - spacing, centers = sq_centers, angular_offset = 0);
 
 // Render the squares
 generic_poly(vertices = square_vertices, paths = [[ 0, 1, 2, 3, 0 ]], // Square paths

@@ -96,34 +96,3 @@ function triangle_vertices(side, centers, angular_offset = 0, rect = true) = let
     )[for (i = [0:len(centers) - 1])[for (j = [0:2]) let(
     angle = j * 120 + angular_offset + rotation_adjustment[i])[centers[i][0] + side / sqrt(3) * cos(angle),
                                                                centers[i][1] + side / sqrt(3) * sin(angle)]]];
-
-module triangle_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
-{
-    if (!is_undef(color_scheme) && !is_undef(centers))
-    {
-        min_x = min([for (center = centers) center[0]]);
-        max_x = max([for (center = centers) center[0]]);
-        min_y = min([for (center = centers) center[1]]);
-        max_y = max([for (center = centers) center[1]]);
-        for (i = [0:len(vertices) - 1])
-        {
-            normalized_x = (centers[i][0] - min_x) / (max_x - min_x);
-            normalized_y = (centers[i][1] - min_y) / (max_y - min_y);
-            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
-                polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
-            else polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
-        }
-    }
-    else
-    {
-        for (i = [0:len(vertices) - 1])
-        {
-            if (!is_undef(extrude))
-                linear_extrude(height = extrude) polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
-            else
-                polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
-        }
-    }
-}

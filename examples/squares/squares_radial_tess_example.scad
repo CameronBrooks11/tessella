@@ -27,21 +27,17 @@ centers = filter ? filtered_centers : unfiltered_centers;
 vertices = squares_vertices(side = side - spacing, centers = centers);
 
 // Render the squares
-generic_poly(
-    vertices = vertices,
-    paths = [[0, 1, 2, 3, 0]], // Square paths
-    centers = centers,
-    color_scheme = "scheme1",
-    alpha = 1,
-    extrude = 5
-);
-// Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
-// In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
-// to get the identical mesh:
-// squares_poly(vertices = vertices, extrude = extHeight);
-// Really if just wanted to visualize the tesselation we could just use 'vertices' like this:
-// squares_poly(vertices = vertices);
-// If we just wanted to render the squares without any color scheme or extrusion.
+generic_poly(vertices = vertices, paths = [[ 0, 1, 2, 3, 0 ]], centers = centers, color_scheme = "scheme1", alpha = 1,
+             extrude = 5);
+// Note:
+// - The 'centers' parameter is used only for calculating the color scheme.
+//   If no color scheme is needed, this parameter can be omitted.
+// - The 'vertices' parameter is mandatory for defining the geometry of the tessellation.
+// - The 'paths' parameter defines the connectivity of vertices to form each shape.
+//   For example, [[0, 1, 2, 3, 0]] represents a square connecting vertices in order.
+// - If only a flat visualization of the tessellation is required, the 'extrude' parameter can be omitted.
+//   For example:
+//   generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 0]]);
 
 // Render points for debugging
 translate([ 0, 0, extHeight ])

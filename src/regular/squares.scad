@@ -64,46 +64,6 @@ function squares_centers_rect(side, n, m) =
  * @param alpha         (Optional) Alpha transparency value.
  */
 
-function squares_vertices(side, centers, angular_offset = 0) = [for (
+function squares_vertices(side, centers, angular_offset = 45) = [for (
     center = centers)[for (i = [0:3]) let(angle = i * 90 + angular_offset)[center[0] + side / sqrt(2) * cos(angle),
                                                                            center[1] + side / sqrt(2) * sin(angle)]]];
-
-/**
- * @brief Renders 2D squares at specified centers, with optional color gradient.
- *
- * @param vertices      Array of vertices for each square.
- * @param centers       (Optional) Array of square center points.
- * @param color_scheme  (Optional) Color scheme for gradient.
- * @param alpha         Transparency value (default: 1).
- * @param extrude       (Optional) Extrusion height for 3D squares.
- */
-module squares_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
-{
-    if (!is_undef(color_scheme) && !is_undef(centers))
-    {
-        min_x = min([for (center = centers) center[0]]);
-        max_x = max([for (center = centers) center[0]]);
-        min_y = min([for (center = centers) center[1]]);
-        max_y = max([for (center = centers) center[1]]);
-        for (i = [0:len(vertices) - 1])
-        {
-            normalized_x = (centers[i][0] - min_x) / (max_x - min_x);
-            normalized_y = (centers[i][1] - min_y) / (max_y - min_y);
-            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
-                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
-            else polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
-        }
-    }
-    else
-    {
-        for (i = [0:len(vertices) - 1])
-        {
-            if (!is_undef(extrude))
-                linear_extrude(height = extrude) polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
-            else
-                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
-        }
-    }
-}

@@ -41,6 +41,14 @@ generic_poly(
     alpha = 0.7,
     extrude = 3
 );
+// Note:
+// - The 'centers' parameter is used only for calculating the color scheme.
+//   If no color scheme is required, this parameter can be omitted.
+// - The 'vertices' parameter is mandatory for defining the geometry of the tessellation.
+// - The 'paths' parameter defines the connectivity of vertices to form each shape.
+//   For triangles, [[0, 1, 2, 0]] ensures a closed loop connecting three vertices.
+// - If a flat 2D visualization is sufficient, the 'extrude' parameter can be omitted:
+//   generic_poly(vertices = vertices, paths = [[0, 1, 2, 0]]);
 
 // Render points for debugging
 if (print_pts)

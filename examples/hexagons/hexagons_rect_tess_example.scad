@@ -27,22 +27,23 @@ centers = filter ? filtered_centers : centers;
 // Generate vertices for the hexagons
 vertices = hexagons_vertices(radius = rad - space, centers = filtered_centers, angular_offset = 30);
 
-// Render the hexagons
-generic_poly(
-    vertices = vertices,
-    paths = [[0, 1, 2, 3, 4, 5, 0]], // Hexagon paths
-    centers = centers,
-    color_scheme = "scheme3",
-    alpha = 0.5,
-    extrude = 10
+// Render the hexagons using the generic_poly module
+generic_poly(vertices = vertices,               // The vertices defining the hexagons
+             paths = [[ 0, 1, 2, 3, 4, 5, 0 ]], // Hexagon paths defining the connection order of vertices
+             centers = centers,                 // Centers used for optional color scheme calculations
+             color_scheme = "scheme3",          // Apply a color gradient based on centers
+             alpha = 0.5,                       // Set the transparency level
+             extrude = 10                       // Extrusion height for 3D rendering
 );
-// Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
-// In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
-// to get the identical mesh:
-// hexagons_poly(vertices = vertices, extrude = extHeight);
-// Really if just wanted to visualize the tesselation we could just use 'vertices' like this:
-// hexagons_poly(vertices = vertices);
-// If we just wanted to render the hexagons without any color scheme or extrusion.
+// Note:
+// - The 'centers' parameter is used only for calculating the color scheme.
+//   If no color scheme is needed, this parameter can be omitted.
+// - The 'vertices' parameter is mandatory for defining the geometry of the tessellation.
+// - The 'paths' parameter defines the connectivity of vertices to form each shape.
+//   For example, [[0, 1, 2, 3, 4, 5, 0]] represents a hexagon connecting vertices in order.
+// - If only a flat visualization of the tessellation is required, the 'extrude' parameter can be omitted.
+//   For example:
+//   generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]]);
 
 // Render points for debugging and visualization of the center points and their filtering
 translate([ 0, 0, extHeight ])
