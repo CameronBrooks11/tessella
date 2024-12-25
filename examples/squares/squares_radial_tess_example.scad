@@ -27,7 +27,14 @@ centers = filter ? filtered_centers : unfiltered_centers;
 vertices = squares_vertices(side = side - spacing, centers = centers);
 
 // Render the squares
-squares_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 0]], // Square paths
+    centers = centers,
+    color_scheme = "scheme1",
+    alpha = 1,
+    extrude = 5
+);
 // Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
 // In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
 // to get the identical mesh:

@@ -29,7 +29,14 @@ centers = filter ? filtered_centers : unfiltered_centers;
 vertices = squares_vertices(side = side - spacing, centers = centers);
 
 // Render the squares
-squares_poly(vertices = vertices, centers = centers, color_scheme = "scheme3", alpha = 0.5, extrude = extHeight);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 0]], // Square paths
+    centers = centers,
+    color_scheme = "scheme1",
+    alpha = 1,
+    extrude = 5
+);
 
 // Render points for debugging
 translate([ 0, 0, extHeight ])

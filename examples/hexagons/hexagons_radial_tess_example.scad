@@ -26,7 +26,14 @@ vertices = filter ? hexagons_vertices(radius = rad - space, centers = filtered_c
                   : hexagons_vertices(radius = rad - space, centers = centers, angular_offset = 30);
 
 // Render the hexagons
-hexagons_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 4, 5, 0]], // Hexagon paths
+    centers = centers,
+    color_scheme = "scheme1",
+    alpha = 0.5,
+    extrude = 10
+);
 // Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
 // In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
 // to get the identical mesh:

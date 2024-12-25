@@ -103,3 +103,41 @@ function filter_center_points(centers, filter_list, tolerance = EPSILON) =
  */
 function filter_triangulated_center_points(r, centers, filter_list, tolerance = EPSILON) = let(
     n = len(centers))[for (i = [0:n - 1]) if (!is_within_radius(centers[i], r + tolerance, filter_list)) centers[i]];
+
+module generic_poly(vertices, paths, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
+{
+    if (!is_undef(color_scheme) && !is_undef(centers))
+    {
+        // Compute normalization bounds
+        min_x = min([for (center = centers) center[0]]);
+        max_x = max([for (center = centers) center[0]]);
+        min_y = min([for (center = centers) center[1]]);
+        max_y = max([for (center = centers) center[1]]);
+
+        for (i = [0:len(vertices) - 1])
+        {
+            // Normalize coordinates for color gradient
+            normalized_x = (centers[i][0] - min_x) / (max_x - min_x + 1e-9);
+            normalized_y = (centers[i][1] - min_y) / (max_y - min_y + 1e-9);
+
+            // Get color value
+            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
+
+            // Render the shape
+            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
+                polygon(points = vertices[i], paths = paths);
+            else polygon(points = vertices[i], paths = paths);
+        }
+    }
+    else
+    {
+        for (i = [0:len(vertices) - 1])
+        {
+            // Render the shape without a color gradient
+            if (!is_undef(extrude))
+                linear_extrude(height = extrude) polygon(points = vertices[i], paths = paths);
+            else
+                polygon(points = vertices[i], paths = paths);
+        }
+    }
+}

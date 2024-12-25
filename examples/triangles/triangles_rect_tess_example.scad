@@ -43,7 +43,14 @@ centers = filter ? filtered_centers : unfiltered_centers;
 vertices = triangle_vertices(side = side - spacing, centers = centers, angular_offset = 0, rect = true);
 
 // Render the triangles
-triangle_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 0]], // Triangle paths
+    centers = centers,
+    color_scheme = "scheme2",
+    alpha = 0.7,
+    extrude = 3
+);
 
 // Render points for debugging
 if (print_pts)

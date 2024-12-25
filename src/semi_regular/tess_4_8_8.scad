@@ -16,6 +16,20 @@
 include <../tessUtils.scad>;
 
 /**
+ * @brief Generates center points for a 4.8.8 tessellation.
+ *
+ * Creates a grid of center points for a 4.8.8 tessellation, suitable for tiling an area.
+ *
+ * @param radius The radius of the octagons.
+ * @param n The number of octagons along the x-axis.
+ * @param m The number of octagons along the y-axis.
+ * @param rotate (Optional) Boolean to apply rotation to the grid, default is true.
+ * @return An array of center points for octagons.
+ */
+
+// function squares_tess_4_8_8_centers(radius, n, m, rotate = true) =
+
+/**
  * @brief Generates center points for an octagonal grid.
  *
  * Creates a grid of octagon center points, optionally rotated, suitable for tiling an area.
@@ -26,124 +40,82 @@ include <../tessUtils.scad>;
  * @param rotate (Optional) Boolean to apply rotation to the grid, default is true.
  * @return An array of center points for octagons.
  */
-function octagon_centers_grid(radius, n, m, rotate = true) =
-    let(side_length = (radius * 2) / (sqrt(4 + 2 * sqrt(2))),                      // Side length of the octagon
-        segment_length = side_length / sqrt(2),                                    // Segment length for positioning
-        total_width = side_length * (1 + sqrt(2)),                                 // Total width including spacing
-        tip = rotate ? segment_length : (side_length / 2) * sqrt(2 - sqrt(2)) * 2, // Adjustment for rotation
-        shift = rotate ? total_width : radius * 2,                                 // Shift amount based on rotation
-        offset = shift - tip,                                                      // Offset for alignment
-        // Function to generate grid points
-        generate_grid_points = function(n, m, step)[for (i = [0:n - 1], j = [0:m - 1])[i * step, j *step]])
-        generate_grid_points(n, m, total_width);
+function octagons_centers_rect(radius, n,
+                               m) = let(side_length = (radius * 2) /
+                                                      (sqrt(4 + 2 * sqrt(2))),    // Side length of the octagon
+                                        total_width = side_length * (1 + sqrt(2)) // Total width including spacing
+                                        ) squares_centers_rect(total_width, n, m);
 
 /**
- * @brief Renders octagons at specified centers with optional color gradient.
+ * @brief Generates center points for the squares in a 4.8.8 tiling grid.
  *
- * Draws 2D octagons based on the provided center points, applying spacing and color gradients if specified.
+ * Aligns the square centers with the octagonal centers by using a shifted grid,
+ * creating the required semi-regular tiling pattern.
  *
- * @param radius The radius of each octagon.
- * @param spacing (Optional) Spacing between octagons, default is 0.
- * @param octagon_centers (Optional) Array of center points. If not provided, n and m must be specified.
- * @param n (Optional) Number of octagons along x-axis for grid.
- * @param m (Optional) Number of octagons along y-axis for grid.
- * @param rotate (Optional) Boolean to apply rotation to the octagons, default is true.
- * @param order (Optional) Multiplier for the number of facets, default is 1.
- * @param color_scheme (Optional) Name of the color scheme for gradient.
- * @param alpha (Optional) Alpha transparency value.
+ * @param radius The radius of the octagons.
+ * @param n The number of octagons along the x-axis.
+ * @param m The number of octagons along the y-axis.
+ * @return An array of center points for squares.
  */
-module octagons(radius, spacing = 0, octagon_centers = [], n = undef, m = undef, rotate = true, order = 1,
-                color_scheme = undef, alpha = undef)
-{
-    if (len(octagon_centers) == 0 && !is_undef(n) && !is_undef(m))
-    {
-        // Generate octagon centers based on n x m grid
-        octagon_centers = octagon_centers_grid(radius, n, m, rotate);
-    }
-    else if (len(octagon_centers) == 0)
-    {
-        echo("No octagon centers provided and 'n' or 'm' is undefined.");
-    }
+function squares_8_8_centers_rect(radius, n, m) = let(
+    side_length = (radius * 2) / (sqrt(4 + 2 * sqrt(2))),  // Side length of the octagon
+    total_width = side_length * (1 + sqrt(2)),             // Total width including spacing
+    shift_x = total_width / 2,                             // Horizontal shift for squares
+    shift_y = total_width / 2                              // Vertical shift for squares
+) [for (c = squares_centers_rect(total_width, n - 1, m - 1)) [c[0] + shift_x, c[1] + shift_y]];
 
-    // Determine the range of the center points for normalization
-    min_x = min([for (center = octagon_centers) center[0]]);
-    max_x = max([for (center = octagon_centers) center[0]]);
-    min_y = min([for (center = octagon_centers) center[1]]);
-    max_y = max([for (center = octagon_centers) center[1]]);
-
-    for (center = octagon_centers)
-    {
-        // Normalize coordinates for color gradient
-        normalized_x = (center[0] - min_x) / (max_x - min_x);
-        normalized_y = (center[1] - min_y) / (max_y - min_y);
-
-        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        // If color_scheme is not specified, use default color
-        if (is_undef(color_scheme))
-        {
-            color_val = [ 0.9, 0.9, 0.9 ]; // Default grey color
-        }
-
-        // Draw the octagon at the specified center
-        color(color_val, alpha = alpha) translate([ center[0], center[1], 0 ])
-            rotate([ 0, 0, rotate ? 22.5 : 0 ])            // Apply rotation if specified
-            circle(radius - spacing / 2, $fn = 8 * order); // Octagon shape
-    }
-}
 
 /**
- * @brief Renders extruded octagons at specified centers with optional color gradient.
+ * @brief Generates vertices for octagons based on radius and center points.
  *
- * Draws 3D octagonal prisms based on the provided center points, applying spacing and color gradients if specified.
+ * Generates the vertices for octagons based on the provided center points and radius.
  *
  * @param radius The radius of each octagon.
- * @param height The extrusion height of the octagons.
- * @param spacing (Optional) Spacing between octagons, default is 0.
- * @param octagon_centers (Optional) Array of center points. If not provided, n and m must be specified.
- * @param n (Optional) Number of octagons along x-axis for grid.
- * @param m (Optional) Number of octagons along y-axis for grid.
- * @param rotate (Optional) Boolean to apply rotation to the octagons, default is true.
- * @param order (Optional) Multiplier for the number of facets, default is 1.
- * @param color_scheme (Optional) Name of the color scheme for gradient.
- * @param alpha (Optional) Alpha transparency value.
+ * @param centers Array of center points.
+ * @param angular_offset (Optional) Rotation angle for vertices, default is 22.5°.
+ * @return Array of vertices for each octagon.
  */
-module octagonsSolid(radius, height, spacing = 0, octagon_centers = [], n = undef, m = undef, rotate = true, order = 1,
-                     color_scheme = undef, alpha = undef)
+function octagons_vertices(radius, centers, angular_offset = 22.5) = [for (center = centers)[for (i = [0:7]) let(
+    angle = i * 45 + angular_offset)[center[0] + radius * cos(angle), center[1] + radius *sin(angle)]]];
+
+/**
+ * @brief Renders octagons based on vertices and center points.
+ *
+ * Renders octagons based on the provided vertices and center points, with optional color and extrusion.
+ *
+ * @param radius The radius of each octagon.
+ * @param vertices Array of vertices for octagons.
+ * @param rotate (Optional) Boolean to apply rotation to the grid, default is true.
+ * @param color_scheme (Optional) Color scheme for octagons, default is undefined.
+ * @param alpha (Optional) Transparency value for octagons, default is undefined.
+ */
+module octagons_poly(radius, vertices, rotate = true, color_scheme = undef, alpha = undef)
 {
-    if (len(octagon_centers) == 0 && !is_undef(n) && !is_undef(m))
+    if (!is_undef(color_scheme) && !is_undef(centers))
     {
-        // Generate octagon centers based on n x m grid
-        octagon_centers = octagon_centers_grid(radius, n, m, rotate);
-    }
-    else if (len(octagon_centers) == 0)
-    {
-        echo("No octagon centers provided and 'n' or 'm' is undefined.");
-    }
-
-    // Determine the range of the center points for normalization
-    min_x = min([for (center = octagon_centers) center[0]]);
-    max_x = max([for (center = octagon_centers) center[0]]);
-    min_y = min([for (center = octagon_centers) center[1]]);
-    max_y = max([for (center = octagon_centers) center[1]]);
-
-    for (center = octagon_centers)
-    {
-        // Normalize coordinates for color gradient
-        normalized_x = (center[0] - min_x) / (max_x - min_x);
-        normalized_y = (center[1] - min_y) / (max_y - min_y);
-
-        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        // If color_scheme is not specified, use default color
-        if (is_undef(color_scheme))
+        min_x = min([for (center = centers) center[0]]);
+        max_x = max([for (center = centers) center[0]]);
+        min_y = min([for (center = centers) center[1]]);
+        max_y = max([for (center = centers) center[1]]);
+        for (i = [0:len(vertices) - 1])
         {
-            color_val = [ 0.9, 0.9, 0.9 ]; // Default grey color
-        }
+            normalized_x = (centers[i][0] - min_x) / (max_x - min_x);
+            normalized_y = (centers[i][1] - min_y) / (max_y - min_y);
+            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
 
-        // Draw the extruded octagon at the specified center
-        color(color_val, alpha = alpha) translate([ center[0], center[1], 0 ])
-            rotate([ 0, 0, rotate ? 22.5 : 0 ]) // Apply rotation if specified
-            linear_extrude(height = height) circle(radius - spacing / 2, $fn = 8 * order); // Octagon shape
+            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 4, 5, 6, 7, 0 ]]);
+            else polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 4, 5, 6, 7, 0 ]]);
+        }
+    }
+    else
+    {
+        for (i = [0:len(vertices) - 1])
+        {
+            if (!is_undef(extrude))
+                linear_extrude(height = extrude) polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 4, 5, 6, 7, 0 ]]);
+            else
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 4, 5, 6, 7, 0 ]]);
+        }
     }
 }

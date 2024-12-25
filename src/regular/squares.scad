@@ -64,7 +64,7 @@ function squares_centers_rect(side, n, m) =
  * @param alpha         (Optional) Alpha transparency value.
  */
 
-function squares_vertices(side, centers, angular_offset = 45) = [for (
+function squares_vertices(side, centers, angular_offset = 0) = [for (
     center = centers)[for (i = [0:3]) let(angle = i * 90 + angular_offset)[center[0] + side / sqrt(2) * cos(angle),
                                                                            center[1] + side / sqrt(2) * sin(angle)]]];
 
