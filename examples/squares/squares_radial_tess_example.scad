@@ -24,16 +24,16 @@ echo("Filtered Centers:", filtered_centers);
 centers = filter ? filtered_centers : unfiltered_centers;
 
 // Generate vertices for the squares
-vertices = square_vertices(side = side - spacing, centers = centers);
+vertices = squares_vertices(side = side - spacing, centers = centers);
 
 // Render the squares
-square_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
+squares_poly(vertices = vertices, centers = centers, color_scheme = "scheme1", alpha = 0.5, extrude = extHeight);
 // Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
 // In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
 // to get the identical mesh:
-// square_poly(vertices = vertices, extrude = extHeight);
+// squares_poly(vertices = vertices, extrude = extHeight);
 // Really if just wanted to visualize the tesselation we could just use 'vertices' like this:
-// square_poly(vertices = vertices);
+// squares_poly(vertices = vertices);
 // If we just wanted to render the squares without any color scheme or extrusion.
 
 // Render points for debugging

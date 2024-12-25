@@ -64,7 +64,7 @@ function squares_centers_rect(side, n, m) =
  * @param alpha         (Optional) Alpha transparency value.
  */
 
-function square_vertices(side, centers, angular_offset = 45) = [for (
+function squares_vertices(side, centers, angular_offset = 45) = [for (
     center = centers)[for (i = [0:3]) let(angle = i * 90 + angular_offset)[center[0] + side / sqrt(2) * cos(angle),
                                                                            center[1] + side / sqrt(2) * sin(angle)]]];
 
@@ -77,7 +77,7 @@ function square_vertices(side, centers, angular_offset = 45) = [for (
  * @param alpha         Transparency value (default: 1).
  * @param extrude       (Optional) Extrusion height for 3D squares.
  */
-module square_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
+module squares_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
 {
     if (!is_undef(color_scheme) && !is_undef(centers))
     {

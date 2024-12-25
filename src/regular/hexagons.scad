@@ -16,7 +16,7 @@ include <../tessUtils.scad>;
  * @param levels Number of radial levels.
  * @return Array of hexagon center points.
  */
-function hexagon_centers_radial(radius, levels) = let(
+function hexagons_centers_radial(radius, levels) = let(
     offset_x = radius * cos(30), offset_y = radius + radius * sin(30), offset_step = 2 * offset_x,
     dx = -(levels - 1) * offset_x * 2, beginning_n = 2 * levels - 1,
 
@@ -43,7 +43,7 @@ function hexagon_centers_radial(radius, levels) = let(
  * @param m Number of hexagons along y-axis.
  * @return Array of hexagon center points.
  */
-function hexagon_centers_rect(radius, n, m) = let(
+function hexagons_centers_rect(radius, n, m) = let(
     offset_x = radius * cos(30), offset_y = radius + radius * sin(30),
     offset_step =
         2 * offset_x)[for (i = [0:n - 1], j = [0:m - 1])[i * offset_step + (j % 2) * (offset_step / 2), j *offset_y]];
@@ -55,7 +55,7 @@ function hexagon_centers_rect(radius, n, m) = let(
  * @param angular_offset Rotation angle for vertices.
  * @return Array of vertices for each hexagon.
  */
-function hexagon_vertices(radius, centers, angular_offset = 30) = [for (center = centers)[for (i = [0:5]) let(
+function hexagons_vertices(radius, centers, angular_offset = 30) = [for (center = centers)[for (i = [0:5]) let(
     angle = i * 60 + angular_offset)[center[0] + radius * cos(angle), center[1] + radius *sin(angle)]]];
 
 /**
@@ -66,7 +66,7 @@ function hexagon_vertices(radius, centers, angular_offset = 30) = [for (center =
  * @param alpha Transparency value (default: 1).
  * @param extrude (Optional) Extrusion height for 3D hexagons.
  */
-module hexagon_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
+module hexagons_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
 {
     if (!is_undef(color_scheme) && !is_undef(centers))
     {

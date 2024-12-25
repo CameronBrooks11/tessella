@@ -26,10 +26,10 @@ echo("Filtered Centers Grid:", filtered_centers);
 centers = filter ? filtered_centers : unfiltered_centers;
 
 // Generate vertices for the squares
-vertices = square_vertices(side = side - spacing, centers = centers);
+vertices = squares_vertices(side = side - spacing, centers = centers);
 
 // Render the squares
-square_poly(vertices = vertices, centers = centers, color_scheme = "scheme3", alpha = 0.5, extrude = extHeight);
+squares_poly(vertices = vertices, centers = centers, color_scheme = "scheme3", alpha = 0.5, extrude = extHeight);
 
 // Render points for debugging
 translate([ 0, 0, extHeight ])
