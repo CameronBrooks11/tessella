@@ -4,13 +4,6 @@
     This module implements the tessellation of a plane using a semi-regular tiling
     pattern defined by the vertex configuration 4.8.8, where one square and two
     octagons meet at each vertex.
-
-    Tiling properties:
-    - Polygons used: squares (4 sides), octagons (8 sides)
-    - Vertex Configuration: 4.8.8
-    - Angle Sum at Vertex: 360° (valid for Euclidean tiling).
-
-    Reference: Euclidean tessellation theory for semi-regular tilings.
 */
 
 include <../tessUtils.scad>;
