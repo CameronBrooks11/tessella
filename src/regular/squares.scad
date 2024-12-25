@@ -8,16 +8,9 @@
     - Sides: 4
     - Interior Angle: 90°
     - Vertex Configuration: 4.4.4.4
-
-    Mathematically valid because the interior angle divides 360° exactly.
-    Reference: Euclidean tessellation theory for regular polygons.
 */
 
 include <../tessUtils.scad>;
-
-//////////////////////////////////////////////////////
-// 1) FUNCTION TO GENERATE "LEVELS" (DIAMOND-LIKE) //
-//////////////////////////////////////////////////////
 
 /**
  * @brief Generates center points for a "levels-based" square arrangement.
@@ -30,7 +23,7 @@ include <../tessUtils.scad>;
  * @param levels Number of levels (rows above the center, plus the center, plus rows below).
  * @return       An array of center points for squares.
  */
-function squares_centers_lvls(side, levels) = let(
+function squares_centers_radial(side, levels) = let(
     // Offsets for spacing
     offset_x = side, // Horizontal spacing
     offset_y = side, // Vertical spacing
@@ -46,10 +39,6 @@ function squares_centers_lvls(side, levels) = let(
     // For each row definition, generate square center points
     [for (row = rows) for (j = [0:row[1] - 1])[row[0][0] + j * offset_x, row[0][1]]];
 
-//////////////////////////////////////////////////////
-// 2) FUNCTION TO GENERATE NxM SQUARE GRID POINTS   //
-//////////////////////////////////////////////////////
-
 /**
  * @brief Generates center points for a rectangular grid of squares (n x m).
  *
@@ -60,12 +49,8 @@ function squares_centers_lvls(side, levels) = let(
  * @param m    The number of squares along the y-axis.
  * @return     An array of center points for squares.
  */
-function squares_centers_NxM(side, n, m) =
+function squares_centers_rect(side, n, m) =
     let(offset_x = side, offset_y = side)[for (ix = [0:n - 1], iy = [0:m - 1])[ix * offset_x, iy *offset_y]];
-
-//////////////////////////////////////////////////////
-// 3) 2D MODULE: RENDER SQUARES AT GIVEN CENTERS    //
-//////////////////////////////////////////////////////
 
 /**
  * @brief Renders 2D squares at specified centers, with optional color gradient.
@@ -78,97 +63,47 @@ function squares_centers_NxM(side, n, m) =
  * @param color_scheme  (Optional) Name of the color scheme for gradient.
  * @param alpha         (Optional) Alpha transparency value.
  */
-module squares(side, spacing = 0, centers = [], levels = undef, n = undef, m = undef, color_scheme = undef,
-               alpha = undef)
-{
-    // Determine center points if not provided
-    if (len(centers) == 0 && !is_undef(levels))
-    {
-        centers = squares_centers_lvls(side, levels);
-    }
-    else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
-    {
-        centers = squares_centers_NxM(side, n, m);
-    }
-    else if (len(centers) == 0)
-    {
-        echo("No centers provided and 'levels' / (n,m) are undefined for squares.");
-    }
 
-    // Bounding box for normalization (used for color gradient)
-    min_x = min([for (c = centers) c[0]]);
-    max_x = max([for (c = centers) c[0]]);
-    min_y = min([for (c = centers) c[1]]);
-    max_y = max([for (c = centers) c[1]]);
-
-    // Draw each square
-    for (c = centers)
-    {
-        normalized_x = (c[0] - min_x) / (max_x - min_x + 1e-9);
-        normalized_y = (c[1] - min_y) / (max_y - min_y + 1e-9);
-        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        if (is_undef(color_scheme))
-        {
-            color_val = [ 0.9, 0.9, 0.9 ]; // Default grey
-        }
-
-        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) square(side - spacing, center = true);
-    }
-}
-
-//////////////////////////////////////////////////////
-// 4) 3D MODULE: EXTRUDED SQUARES (PRISMS)          //
-//////////////////////////////////////////////////////
+function square_vertices(side, centers, angular_offset = 45) = [for (
+    center = centers)[for (i = [0:3]) let(angle = i * 90 + angular_offset)[center[0] + side / sqrt(2) * cos(angle),
+                                                                           center[1] + side / sqrt(2) * sin(angle)]]];
 
 /**
- * @brief Renders extruded (3D) squares (square prisms) at specified centers, with optional color gradient.
+ * @brief Renders 2D squares at specified centers, with optional color gradient.
  *
- * @param side          The side length of each square.
- * @param height        The extrusion height.
- * @param spacing       (Optional) Spacing between squares, default is 0.
- * @param centers       (Optional) Array of center points. If empty, `levels` or (n,m) must be provided.
- * @param levels        (Optional) Number of levels for diamond-like pattern generation.
- * @param n, m          (Optional) Grid dimensions if using NxM generation.
- * @param color_scheme  (Optional) Name of the color scheme for gradient.
- * @param alpha         (Optional) Alpha transparency value.
+ * @param vertices      Array of vertices for each square.
+ * @param centers       (Optional) Array of square center points.
+ * @param color_scheme  (Optional) Color scheme for gradient.
+ * @param alpha         Transparency value (default: 1).
+ * @param extrude       (Optional) Extrusion height for 3D squares.
  */
-module squaresSolid(side, height, spacing = 0, centers = [], levels = undef, n = undef, m = undef, color_scheme = undef,
-                    alpha = undef)
+module square_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
 {
-    // Determine center points if not provided
-    if (len(centers) == 0 && !is_undef(levels))
+    if (!is_undef(color_scheme) && !is_undef(centers))
     {
-        centers = squares_centers_lvls(side, levels);
-    }
-    else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
-    {
-        centers = squares_centers_NxM(side, n, m);
-    }
-    else if (len(centers) == 0)
-    {
-        echo("No centers provided and 'levels' / (n,m) are undefined for squares.");
-    }
-
-    // Bounding box for normalization
-    min_x = min([for (c = centers) c[0]]);
-    max_x = max([for (c = centers) c[0]]);
-    min_y = min([for (c = centers) c[1]]);
-    max_y = max([for (c = centers) c[1]]);
-
-    // Draw each extruded square
-    for (c = centers)
-    {
-        normalized_x = (c[0] - min_x) / (max_x - min_x + 1e-9);
-        normalized_y = (c[1] - min_y) / (max_y - min_y + 1e-9);
-        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        if (is_undef(color_scheme))
+        min_x = min([for (center = centers) center[0]]);
+        max_x = max([for (center = centers) center[0]]);
+        min_y = min([for (center = centers) center[1]]);
+        max_y = max([for (center = centers) center[1]]);
+        for (i = [0:len(vertices) - 1])
         {
-            color_val = [ 0.9, 0.9, 0.9 ]; // Default grey
-        }
+            normalized_x = (centers[i][0] - min_x) / (max_x - min_x);
+            normalized_y = (centers[i][1] - min_y) / (max_y - min_y);
+            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
 
-        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) linear_extrude(height = height)
-            square(side - spacing, center = true);
+            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
+            else polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
+        }
+    }
+    else
+    {
+        for (i = [0:len(vertices) - 1])
+        {
+            if (!is_undef(extrude))
+                linear_extrude(height = extrude) polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
+            else
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 3, 0 ]]);
+        }
     }
 }

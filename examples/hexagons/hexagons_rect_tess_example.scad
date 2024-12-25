@@ -30,6 +30,13 @@ vertices = hexagon_vertices(radius = rad - space, centers = filtered_centers, an
 // Render the hexagons
 hexagon_poly(vertices = vertices, centers = filtered_centers, color_scheme = "scheme3", alpha = 0.5,
              extrude = extHeight);
+// Note that we are passing 'centers' to the module, but it only used for color_scheme calculations.
+// In terms of the final render, it is not necessary to pass 'vertices' and 'extrude' to the module
+// to get the identical mesh:
+// hexagon_poly(vertices = vertices, extrude = extHeight);
+// Really if just wanted to visualize the tesselation we could just use 'vertices' like this:
+// hexagon_poly(vertices = vertices);
+// If we just wanted to render the hexagons without any color scheme or extrusion.
 
 // Render points for debugging and visualization of the center points and their filtering
 translate([ 0, 0, extHeight ])

@@ -29,7 +29,7 @@ filter_points = [
 
 if (mode == 1)
 {
-    centers_grid = triangles_centers_NxM(side, n, m);
+    centers_grid = triangles_centers_rect(side, n, m);
     echo("Unfiltered Centers Grid:", centers_grid);
 
     triangles(side = side, spacing = spacing, centers = centers_grid, color_scheme = "scheme3");
@@ -37,7 +37,7 @@ if (mode == 1)
 }
 else if (mode == 2)
 {
-    centers_grid = triangles_centers_NxM(side, n, m);
+    centers_grid = triangles_centers_rect(side, n, m);
     echo("Unfiltered Centers Grid:", centers_grid);
     filtered_grid = filter_center_points(centers_grid, filter_points);
     echo("Filtered Centers Grid:", filtered_grid);

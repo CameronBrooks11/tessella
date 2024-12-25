@@ -15,10 +15,6 @@
 
 include <../tessUtils.scad>;
 
-//////////////////////////////////////////////////////
-// 1) FUNCTION TO GENERATE "LEVELS" (RADIAL-LIKE)   //
-//////////////////////////////////////////////////////
-
 /**
  * @brief Generates center points for a "levels-based" triangle arrangement.
  *
@@ -29,7 +25,7 @@ include <../tessUtils.scad>;
  * @param levels Number of levels away from the center row.
  * @return       An array of center points for triangles.
  */
-function triangles_centers_lvls(side, levels) = let(
+function triangles_centers_radial(side, levels) = let(
     // Vertical height of each triangle
     vheight = side * sqrt(3) / 2,
     // Generate rows symmetrically around the center
@@ -53,10 +49,6 @@ function triangles_centers_lvls(side, levels) = let(
     // Generate center points for all rows
     [for (row = rows) for (j = [0:row[1] - 1])[row[0][0] + j * side, row[0][1]]];
 
-//////////////////////////////////////////////////////
-// 2) FUNCTION TO GENERATE NxM TRIANGLE GRID POINTS //
-//////////////////////////////////////////////////////
-
 /**
  * @brief Generates center points for a rectangular grid of equilateral triangles (n x m).
  *
@@ -67,7 +59,7 @@ function triangles_centers_lvls(side, levels) = let(
  * @param m    Number of rows (y-axis).
  * @return     An array of center points for triangles.
  */
-function triangles_centers_NxM(side, n, m) = let(
+function triangles_centers_rect(side, n, m) = let(
     vheight = side * sqrt(3) / 2, // Vertical height of each triangle
     col_shift = side / 2,         // Horizontal shift for each column
     row_shift = vheight,          // Horizontal shift for alternating rows
@@ -75,9 +67,39 @@ function triangles_centers_NxM(side, n, m) = let(
                    (vheight - sqrt(3) / 3 * side) *
                        2)[for (j = [0:m - 1], i = [0:n - 1])[i * row_shift + (offset_shift * (j % 2)), j *col_shift]];
 
-//////////////////////////////////////////////////////
-// 3) 2D MODULE: RENDER TRIANGLES AT GIVEN CENTERS  //
-//////////////////////////////////////////////////////
+function triangle_vertices(side, centers, angular_offset = 0) = [for (center = centers)[for (i = [0:2]) let(
+    angle = i * 120 + angular_offset)[center[0] + side * cos(angle), center[1] + side *sin(angle)]]];
+
+module triangle_poly(vertices, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
+{
+    if (!is_undef(color_scheme) && !is_undef(centers))
+    {
+        min_x = min([for (center = centers) center[0]]);
+        max_x = max([for (center = centers) center[0]]);
+        min_y = min([for (center = centers) center[1]]);
+        max_y = max([for (center = centers) center[1]]);
+        for (i = [0:len(vertices) - 1])
+        {
+            normalized_x = (centers[i][0] - min_x) / (max_x - min_x);
+            normalized_y = (centers[i][1] - min_y) / (max_y - min_y);
+            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
+
+            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
+            else polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]); 
+        }
+    }
+    else
+    {
+        for (i = [0:len(vertices) - 1])
+        {
+            if (!is_undef(extrude))
+                linear_extrude(height = extrude) polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
+            else
+                polygon(points = vertices[i], paths = [[ 0, 1, 2, 0 ]]);
+        }
+    }
+}
 
 /**
  * @brief Renders 2D equilateral triangles at specified centers, with optional color gradient.
@@ -96,11 +118,11 @@ module triangles(side, spacing = 0, centers = [], centers_type = undef, levels =
     // Determine center points
     if (len(centers) == 0 && !is_undef(levels))
     {
-        centers = triangles_centers_lvls(side, levels);
+        centers = triangles_centers_radial(side, levels);
     }
     else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
     {
-        centers = triangles_centers_NxM(side, n, m);
+        centers = triangles_centers_rect(side, n, m);
     }
     else if (len(centers) == 0)
     {
@@ -131,62 +153,6 @@ module triangles(side, spacing = 0, centers = [], centers_type = undef, levels =
             !is_undef(color_scheme) ? get_gradient_color(normalized_x, normalized_y, color_scheme) : [ 0.9, 0.9, 0.9 ];
 
         color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) rotate(rot - rot_lvls)
-            circle($fn = 3, r = (side - spacing) / sqrt(3));
-    }
-}
-
-//////////////////////////////////////////////////////
-// 4) 3D MODULE: EXTRUDED TRIANGLES (PRISMS)        //
-//////////////////////////////////////////////////////
-
-/**
- * @brief Renders extruded (3D) equilateral triangles (triangular prisms) at specified centers.
- *
- * @param side          The side length of each triangle.
- * @param height        The extrusion height.
- * @param spacing       (Optional) Spacing between triangles, default = 0.
- * @param centers       (Optional) Array of center points. If empty, `levels` or (n,m) must be provided.
- * @param levels        (Optional) Number of levels for radial-like pattern.
- * @param n, m          (Optional) Grid dimensions if using NxM generation.
- * @param color_scheme  (Optional) Name of the color scheme for gradient.
- * @param alpha         (Optional) Alpha transparency value.
- */
-module trianglesSolid(side, height, spacing = 0, centers = [], levels = undef, n = undef, m = undef,
-                      color_scheme = undef, alpha = undef)
-{
-    // Determine center points
-    if (len(centers) == 0 && !is_undef(levels))
-    {
-        centers = triangles_centers_lvls(side, levels);
-    }
-    else if (len(centers) == 0 && !is_undef(n) && !is_undef(m))
-    {
-        centers = triangles_centers_NxM(side, n, m);
-    }
-    else if (len(centers) == 0)
-    {
-        echo("No centers provided and 'levels' / (n,m) undefined for triangles.");
-    }
-
-    // Bounding box for normalization
-    min_x = min([for (c = centers) c[0]]);
-    max_x = max([for (c = centers) c[0]]);
-    min_y = min([for (c = centers) c[1]]);
-    max_y = max([for (c = centers) c[1]]);
-
-    // Draw each extruded triangle
-    for (c = centers)
-    {
-        normalized_x = (c[0] - min_x) / (max_x - min_x + 1e-9);
-        normalized_y = (c[1] - min_y) / (max_y - min_y + 1e-9);
-        color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
-
-        if (is_undef(color_scheme))
-        {
-            color_val = [ 0.9, 0.9, 0.9 ];
-        }
-
-        color(color_val, alpha = alpha) translate([ c[0], c[1], 0 ]) rotate(30) linear_extrude(height = height)
             circle($fn = 3, r = (side - spacing) / sqrt(3));
     }
 }
