@@ -4,4 +4,4 @@ An OpenSCAD library for generating regular and semi-regular tessellations, provi
 
 TODO:
 
-- replace / revamp the utils to use FunctionalOpenSCAD
+- replace / revamp tessUtils to instead use FunctionalOpenSCAD

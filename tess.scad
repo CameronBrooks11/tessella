@@ -3,6 +3,7 @@
  * @brief Functions and modules for generating tessellation patterns and rendering shapes.
  * @author Cameron K. Brooks
  * @copyright 2024
+ * @info This file serves as an index file to allow for blind importing of all tessellation modules.
  *
  */
 
