@@ -11,18 +11,19 @@ EPSILON = 1e-3; ///< Tolerance value used for floating-point comparisons.
  * @return An RGB color array [r, g, b].
  */
 function get_gradient_color(normalized_x, normalized_y, color_scheme) =
-    color_scheme == "scheme1" ? [ normalized_x, 1 - normalized_x, normalized_y ] : // Red to Blue
-        color_scheme == "scheme2" ? [ 1 - normalized_y, normalized_x, normalized_y ]
-                                  : // Green to Magenta
-        color_scheme == "scheme3" ? [ normalized_y, 1 - normalized_y, normalized_x ]
-                                  : // Blue to Yellow
-        color_scheme == "scheme4" ? [ 1 - normalized_x, normalized_x, 1 - normalized_y ]
-                                  : // Cyan to Red
-        color_scheme == "scheme5" ? [ normalized_x, normalized_x *normalized_y, 1 - normalized_x ]
-                                  : // Purple to Green
-        color_scheme == "scheme6" ? [ 1 - normalized_x * normalized_y, normalized_y, normalized_x ]
-                                  : // Orange to Blue
-        [ 0.9, 0.9, 0.9 ];          // Default color (grey) if no valid color scheme is provided
+  color_scheme == "scheme1" ? [normalized_x, 1 - normalized_x, normalized_y]
+  : // Red to Blue
+  color_scheme == "scheme2" ? [1 - normalized_y, normalized_x, normalized_y]
+  : // Green to Magenta
+  color_scheme == "scheme3" ? [normalized_y, 1 - normalized_y, normalized_x]
+  : // Blue to Yellow
+  color_scheme == "scheme4" ? [1 - normalized_x, normalized_x, 1 - normalized_y]
+  : // Cyan to Red
+  color_scheme == "scheme5" ? [normalized_x, normalized_x * normalized_y, 1 - normalized_x]
+  : // Purple to Green
+  color_scheme == "scheme6" ? [1 - normalized_x * normalized_y, normalized_y, normalized_x]
+  : // Orange to Blue
+  [0.9, 0.9, 0.9]; // Default color (grey) if no valid color scheme is provided
 
 /**
  * @brief Renders points as text labels and optional spheres in the 3D space.
@@ -36,20 +37,23 @@ function get_gradient_color(normalized_x, normalized_y, color_scheme) =
  * @param point_color (Optional) Color of the spheres; default is [0.1, 0.1, 0.1].
  * @param fn (Optional) Number of facets for the spheres; default is 8.
  */
-module print_points(points, text_size = 1, color = [ 0.1, 0.1, 0.1 ], pointD = undef, point_color = [ 0.1, 0.1, 0.1 ],
-                    fn = 8)
-{
-    for (point = points)
-    {
-        // Translate +1 in Z-axis to avoid z-fighting with the surface
-        translate([ point[0], point[1] + pointD * 2, pointD * 2 ]) color(color)
-            text(str("[", point[0], ", ", point[1], "]"), size = text_size, valign = "center", halign = "center");
-        if (pointD != undef)
-        {
-            // Place a sphere at the point if pointD is specified
-            color(point_color) translate([ point[0], point[1], 0 ]) sphere(pointD, $fn = fn);
-        }
+module print_points(
+  points,
+  text_size = 1,
+  color = [0.1, 0.1, 0.1],
+  pointD = undef,
+  point_color = [0.1, 0.1, 0.1],
+  fn = 8
+) {
+  for (point = points) {
+    // Translate +1 in Z-axis to avoid z-fighting with the surface
+    translate([point[0], point[1] + pointD * 2, pointD * 2]) color(color)
+        text(str("[", point[0], ", ", point[1], "]"), size=text_size, valign="center", halign="center");
+    if (pointD != undef) {
+      // Place a sphere at the point if pointD is specified
+      color(point_color) translate([point[0], point[1], 0]) sphere(pointD, $fn=fn);
     }
+  }
 }
 
 /**
@@ -60,10 +64,14 @@ module print_points(points, text_size = 1, color = [ 0.1, 0.1, 0.1 ], pointD = u
  * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
  * @return True if points are equal within tolerance, false otherwise.
  */
-function points_equal(p1, p2, tolerance = EPSILON) = let(comparisons = [for (i = [0:len(p1) - 1]) abs(p1[i] - p2[i]) <
-                                                             tolerance])
-                                                     // Check if all comparisons are true
-                                                     len([for (comp = comparisons) if (comp) true]) == len(comparisons);
+function points_equal(p1, p2, tolerance = EPSILON) =
+  let (
+    comparisons = [
+      for (i = [0:len(p1) - 1]) abs(p1[i] - p2[i]) < tolerance,
+    ]
+  )
+  // Check if all comparisons are true
+  len([for (comp = comparisons) if (comp) true]) == len(comparisons);
 
 /**
  * @brief Checks if a point exists within a list of points, within a specified tolerance.
@@ -73,9 +81,12 @@ function points_equal(p1, p2, tolerance = EPSILON) = let(comparisons = [for (i =
  * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
  * @return True if the point exists in the list within tolerance, false otherwise.
  */
-function is_point_in_list(point, list,
-                          tolerance = EPSILON) = let(equal_points = [for (p = list) points_equal(p, point, tolerance)])
-                                                     len([for (eq = equal_points) if (eq) true]) > 0;
+function is_point_in_list(
+  point,
+  list,
+  tolerance = EPSILON
+) =
+  let (equal_points = [for (p = list) points_equal(p, point, tolerance)]) len([for (eq = equal_points) if (eq) true]) > 0;
 
 /**
  * @brief Filters out centers that are present in a filter list.
@@ -88,56 +99,53 @@ function is_point_in_list(point, list,
  * @return A filtered array of centers.
  */
 function filter_center_points(centers, filter_list, tolerance = EPSILON) =
-    [for (center = centers) if (!is_point_in_list(center, filter_list, tolerance)) center];
+  [for (center = centers) if (!is_point_in_list(center, filter_list, tolerance)) center];
 
-/**
- * @brief Filters out points from centers that are within a radius of points in the filter list.
+/** 
+ * @brief Renders a generic polygon shape with optional extrusion and color gradient.
  *
- * Useful for removing points that are too close to certain areas or features.
+ * This module allows rendering of polygons defined by vertices and paths, with optional extrusion for 3D effects.
+ * It supports color gradients based on center points and a specified color scheme.
  *
- * @param r The radius within which to filter out points.
- * @param centers An array of centers to be filtered.
- * @param filter_list An array of points to filter against.
- * @param tolerance (Optional) Tolerance value for comparison; default is EPSILON.
- * @return A filtered array of centers.
+ * @param vertices An array of vertices for the polygon.    
+ * @param paths An array of paths defining the polygon.
+ * @param centers (Optional) An array of center points for each polygon, used for color gradient.
+ * @param color_scheme (Optional) A string defining the color scheme for the gradient.
+ * @param alpha (Optional) Transparency level for the color; default is 1 (opaque).
+ * @param extrude (Optional) Height for linear extrusion; if undef, no extrusion is applied.
+ * @return Renders the polygon with the specified properties.
  */
-function filter_triangulated_center_points(r, centers, filter_list, tolerance = EPSILON) = let(
-    n = len(centers))[for (i = [0:n - 1]) if (!is_within_radius(centers[i], r + tolerance, filter_list)) centers[i]];
 
-module generic_poly(vertices, paths, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
-{
-    if (!is_undef(color_scheme) && !is_undef(centers))
-    {
-        // Compute normalization bounds
-        min_x = min([for (center = centers) center[0]]);
-        max_x = max([for (center = centers) center[0]]);
-        min_y = min([for (center = centers) center[1]]);
-        max_y = max([for (center = centers) center[1]]);
+module generic_poly(vertices, paths, centers = undef, color_scheme = undef, alpha = 1, extrude = undef) {
+  if (!is_undef(color_scheme) && !is_undef(centers)) {
+    // Compute normalization bounds
+    min_x = min([for (center = centers) center[0]]);
+    max_x = max([for (center = centers) center[0]]);
+    min_y = min([for (center = centers) center[1]]);
+    max_y = max([for (center = centers) center[1]]);
 
-        for (i = [0:len(vertices) - 1])
-        {
-            // Normalize coordinates for color gradient
-            normalized_x = (centers[i][0] - min_x) / (max_x - min_x + 1e-9);
-            normalized_y = (centers[i][1] - min_y) / (max_y - min_y + 1e-9);
+    for (i = [0:len(vertices) - 1]) {
+      // Normalize coordinates for color gradient
+      normalized_x = (centers[i][0] - min_x) / (max_x - min_x + 1e-9);
+      normalized_y = (centers[i][1] - min_y) / (max_y - min_y + 1e-9);
 
-            // Get color value
-            color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
+      // Get color value
+      color_val = get_gradient_color(normalized_x, normalized_y, color_scheme);
 
-            // Render the shape
-            color(color_val, alpha = alpha) if (!is_undef(extrude)) linear_extrude(height = extrude)
-                polygon(points = vertices[i], paths = paths);
-            else polygon(points = vertices[i], paths = paths);
-        }
+      // Render the shape
+      color(color_val, alpha=alpha) if (!is_undef(extrude))
+        linear_extrude(height=extrude)
+          polygon(points=vertices[i], paths=paths);
+      else
+        polygon(points=vertices[i], paths=paths);
     }
-    else
-    {
-        for (i = [0:len(vertices) - 1])
-        {
-            // Render the shape without a color gradient
-            if (!is_undef(extrude))
-                linear_extrude(height = extrude) polygon(points = vertices[i], paths = paths);
-            else
-                polygon(points = vertices[i], paths = paths);
-        }
+  } else {
+    for (i = [0:len(vertices) - 1]) {
+      // Render the shape without a color gradient
+      if (!is_undef(extrude))
+        linear_extrude(height=extrude) polygon(points=vertices[i], paths=paths);
+      else
+        polygon(points=vertices[i], paths=paths);
     }
+  }
 }
