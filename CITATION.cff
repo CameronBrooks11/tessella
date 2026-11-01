@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use tessella, please cite it using these metadata.
+type: software
+title: "tessella: regular and semi-regular tessellations for OpenSCAD"
+abstract: >-
+  An OpenSCAD library for generating regular and semi-regular tessellations,
+  providing tools to design tiling patterns with polygons.
+authors:
+  - given-names: Cameron K.
+    family-names: Brooks
+version: 0.1.0
+date-released: "2026-11-01"
+doi: 10.5281/zenodo.23860865
+license: MPL-2.0
+repository-code: "https://github.com/CameronBrooks11/tessella"
+keywords:
+  - openscad
+  - tessellation
+  - geometry
+  - parametric-design
