@@ -77,7 +77,12 @@ vertices = hexagons_vertices(radius - 1, centers);
 
 difference() {
     translate([-10, -10, 0]) cube([100, 65, 3]);
-    translate([0, 0, -1]) generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]], extrude = 5);
+    translate([0, 0, -1])
+        generic_poly(
+            vertices = vertices,
+            paths = [[0, 1, 2, 3, 4, 5, 0]],
+            extrude = 5
+        );
 }
 ```
 
@@ -91,8 +96,14 @@ use <tessella/tess.scad>
 centers = hexagons_centers_radial(radius = 10, levels = 4);
 vertices = hexagons_vertices(radius = 9, centers = centers);
 
-generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]], centers = centers, color_scheme = "scheme3",
-             alpha = 0.8, extrude = 2);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 4, 5, 0]],
+    centers = centers,
+    color_scheme = "scheme3",
+    alpha = 0.8,
+    extrude = 2
+);
 ```
 
 The centre's position is normalised to the bounding box of all the centres, giving `x` and `y` between 0 and 1. The
@@ -127,8 +138,17 @@ use <tessella/tess.scad>
 
 centers = squares_centers_rect(side = 10, n = 3, m = 2);
 
-generic_poly(vertices = squares_vertices(9, centers), paths = [[0, 1, 2, 3, 0]]);
-print_points(centers, text_size = 1, color = "Black", pointD = 0.5, point_color = "Red", fn = 12);
+vertices = squares_vertices(9, centers);
+generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 0]]);
+
+print_points(
+    centers,
+    text_size = 1,
+    color = "Black",
+    pointD = 0.5,
+    point_color = "Red",
+    fn = 12
+);
 ```
 
 Always pass `pointD`. It sets the sphere size, and the label position is derived from it; without it OpenSCAD reports

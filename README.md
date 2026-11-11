@@ -24,8 +24,13 @@ centers = hexagons_centers_radial(radius = 10, levels = 3);
 vertices = hexagons_vertices(radius = 9, centers = centers);
 
 // draw them
-generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]], centers = centers, color_scheme = "scheme1",
-             extrude = 2);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 4, 5, 0]],
+    centers = centers,
+    color_scheme = "scheme1",
+    extrude = 2
+);
 ```
 
 [Getting started](docs/getting-started.md) continues from here.

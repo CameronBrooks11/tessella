@@ -50,8 +50,13 @@ centers = hexagons_centers_radial(radius = radius, levels = 3);
 vertices = hexagons_vertices(radius = radius - gap, centers = centers);
 
 // 3. draw them
-generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]], centers = centers, color_scheme = "scheme1",
-             extrude = 2);
+generic_poly(
+    vertices = vertices,
+    paths = [[0, 1, 2, 3, 4, 5, 0]],
+    centers = centers,
+    color_scheme = "scheme1",
+    extrude = 2
+);
 ```
 
 ![Nineteen hexagons in a hexagonal arrangement, coloured by position](assets/first_tessellation.png)
@@ -75,7 +80,8 @@ use <tessella/tess.scad>
 radius = 10;
 
 all_centers = hexagons_centers_radial(radius = radius, levels = 3);
-centers = filter_center_points(all_centers, [[0, 0], [17.3205, 0], [-17.3205, 0]]);
+removed = [[0, 0], [17.3205, 0], [-17.3205, 0]];
+centers = filter_center_points(all_centers, removed);
 
 vertices = hexagons_vertices(radius = radius - 1, centers = centers);
 generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]], extrude = 2);

@@ -70,7 +70,8 @@ use <tessella/tess.scad>
 centers = triangles_centers_rect(side = 10, n = 6, m = 8);
 vertices = triangle_vertices(side = 10, centers = centers);
 
-translate([30, 15, 0]) generic_poly(vertices = vertices, paths = [[0, 1, 2, 0]]);
+translate([30, 15, 0])
+    generic_poly(vertices = vertices, paths = [[0, 1, 2, 0]]);
 ```
 
 ## 4.8.8
@@ -81,8 +82,11 @@ The 4.8.8 tiling has two kinds of tile, so it has two centres functions that are
 use <tessella/tess.scad>
 
 radius = 10;
-oct_centers = octagons_centers_rect(radius, 4, 3);    // 4 × 3 octagons
-sq_centers = squares_8_8_centers_rect(radius, 4, 3);  // the 3 × 2 squares between them
+// 4 × 3 octagons
+oct_centers = octagons_centers_rect(radius, 4, 3);
+
+// the 3 × 2 squares between them
+sq_centers = squares_8_8_centers_rect(radius, 4, 3);
 ```
 
 `n` and `m` count octagons. The squares fill the gaps between four octagons, so there are `(n - 1) × (m - 1)` of
