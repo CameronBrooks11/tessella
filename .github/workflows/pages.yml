@@ -1,0 +1,149 @@
+# Builds the Jekyll site in docs/, publishes the example models into it, and
+# deploys it to GitHub Pages.
+# Adapted from CameronBrooks11/just-the-docs-template-openscad.
+name: Deploy Jekyll site to Pages
+
+on:
+  push:
+    branches: ["main"]
+
+  # Build only, so a pull request shows whether the site and the models still build
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: read # configure-pages reads the site's base path
+
+# One run per ref; a newer push replaces an older one
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          cache-version: 0 # Increment this number if you need to re-download cached gems
+          working-directory: docs
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Build with Jekyll
+        working-directory: docs
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Install OpenSCAD (color-preserving OFF export)
+        # ubuntu's `openscad` package is 2021.01: no Manifold backend, and OFF
+        # export drops color() entirely, which would leave every static 3D view
+        # in the viewer's default colour. The examples are coloured per tile, so
+        # pin a development snapshot AppImage that has Manifold and check its
+        # published checksum.
+        #
+        # Snapshots are pruned after roughly eight months. When this 404s, pick
+        # a newer build from https://files.openscad.org/snapshots/ and update
+        # both values -- each AppImage has a .sha256 published beside it.
+        #
+        # --appimage-extract-and-run avoids needing FUSE, which the runners
+        # do not provide.
+        env:
+          OPENSCAD_SNAPSHOT: OpenSCAD-2026.08.19-x86_64.AppImage
+          OPENSCAD_SHA256: fdd818025e890f465ffacffbe7d0c6fa3ebeb3f7c18ee860a909ab41396be643
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          # The AppImage bundles Qt but links the system GL/font stack, which
+          # the runner image does not carry.
+          sudo apt-get install -y xvfb \
+            libegl1 libgl1 libopengl0 libfontconfig1 libharfbuzz0b
+          curl -fSL -o /tmp/openscad.AppImage \
+            "https://files.openscad.org/snapshots/${OPENSCAD_SNAPSHOT}"
+          echo "${OPENSCAD_SHA256}  /tmp/openscad.AppImage" | sha256sum -c -
+          chmod +x /tmp/openscad.AppImage
+          /tmp/openscad.AppImage --appimage-extract-and-run --version
+
+      - name: Render static model geometry
+        # Pre-render each example to OFF (+ a PNG poster) for the `static`
+        # surfaces. color() only survives into OFF on the Manifold backend, so
+        # pass --backend explicitly rather than relying on the default.
+        #
+        # The PNG poster needs an OpenGL context, so render it under xvfb (a
+        # virtual display). Posters stay in preview mode (no --render), which
+        # keeps color() and the 2D point labels.
+        #
+        # The hexagon and square examples label their points with 2D text. The
+        # OFF export drops it with a "Mixing 2D and 3D objects" warning; that is
+        # expected, and the labels still show on the poster.
+        run: |
+          set -euo pipefail
+          mkdir -p rendered
+          for example in examples/*/*_tess_example.scad; do
+            model="$(basename "$example" _tess_example.scad)"
+            /tmp/openscad.AppImage --appimage-extract-and-run --backend=Manifold \
+              "$example" -o "rendered/$model.off"
+            xvfb-run -a /tmp/openscad.AppImage --appimage-extract-and-run \
+              "$example" -o "rendered/$model.png" \
+              --imgsize=1000,750 --viewall --autocenter
+
+            # Fail loudly if the OFF came out colorless. A colored face line is
+            # "<n> <n indices> r g b" -- i.e. at least n+4 fields.
+            if ! awk '$1 ~ /^[0-9]+$/ && $1 >= 3 && NF >= $1 + 4 { found = 1; exit } END { exit !found }' \
+              "rendered/$model.off"; then
+              echo "::error::rendered/$model.off carries no per-face colors -- check the OpenSCAD version and --backend" >&2
+              exit 1
+            fi
+          done
+          ls -l rendered
+
+      - name: Stage customizer project tree
+        # The customizer targets publish everything under their projectRoot, so
+        # stage only what the example entries need -- the index file, src/ and
+        # the examples -- with the repo layout preserved so the relative
+        # `use <../../tess.scad>` still resolves.
+        run: |
+          mkdir -p publish-staging
+          cp tess.scad LICENSE publish-staging/
+          cp -r src examples publish-staging/
+
+      - name: Assemble OpenSCAD model surfaces
+        # Publishes the models declared in openscad-publish.yml into the built
+        # Jekyll site (docs/_site), served same-origin.
+        uses: CameronBrooks11/openscad-web@v0
+        with:
+          config: ./openscad-publish.yml
+
+      - name: Upload artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/_site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

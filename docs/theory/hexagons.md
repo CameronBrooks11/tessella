@@ -1,6 +1,7 @@
 ---
 title: Hexagons
 parent: Theory
+math: true
 nav_order: 1
 ---
 
@@ -18,10 +19,10 @@ A regular hexagon is made of six equilateral triangles, such as $ABC$. $D$ is th
 triangle $CDB$ the angle at $B$ is 60° and
 
 $$
-\tan(60^\circ) = \frac{|CD|}{|DB|}
+\tan(60^\circ) = \frac{CD}{DB}
 $$
 
-$|CD|$ is half the width and $|DB|$ is half a side. Since $\tan(60^\circ) = \sqrt{3}$,
+$CD$ is half the width and $DB$ is half a side. Since $\tan(60^\circ) = \sqrt{3}$,
 
 $$
 \sqrt{3} = \frac{w/2}{s/2} = \frac{w}{s}

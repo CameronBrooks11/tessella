@@ -1,0 +1,5 @@
+# Build inputs for the docs model embeds (see .github/workflows/pages.yml):
+# rendered/ holds the render step's OFF geometry and PNG posters;
+# publish-staging/ is the staged customizer tree.
+/rendered/
+/publish-staging/

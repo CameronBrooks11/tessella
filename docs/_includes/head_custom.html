@@ -1,0 +1,12 @@
+{%- comment -%}
+  Just-the-Docs head extension point. Loads MathJax on pages that set
+  `math: true` in their front matter. The pages write display math as $$...$$
+  and inline math as $...$, which is also what GitHub renders; MathJax does not
+  treat single dollars as delimiters unless told to.
+{%- endcomment -%}
+{%- if page.math %}
+<script>
+  window.MathJax = { tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+{%- endif %}
