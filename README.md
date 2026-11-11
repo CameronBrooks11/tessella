@@ -43,7 +43,7 @@ Each tiling has functions that return tile centres and tile outlines as lists of
 
 ## Documentation
 
-The pages are in `docs/`:
+The documentation site is at <https://cameronbrooks11.github.io/tessella/>, where the [examples](https://cameronbrooks11.github.io/tessella/examples/) are embedded as 3D models. The same pages are in `docs/`:
 
 - [Getting started](docs/getting-started.md)
 - [Usage](docs/usage/index.md): [layouts](docs/usage/layouts.md), [removing tiles](docs/usage/filtering.md) and [rendering](docs/usage/rendering.md)

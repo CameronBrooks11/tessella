@@ -1,6 +1,7 @@
 ---
 title: Theory
 nav_order: 6
+math: true
 has_children: true
 ---
 

@@ -1,0 +1,116 @@
+# Declares which OpenSCAD models are published into the docs site and how.
+# Consumed by the openscad-web GitHub Action in .github/workflows/pages.yml.
+# Reference: https://github.com/CameronBrooks11/openscad-web/blob/v0/docs/PUBLISHING.md
+#
+# Each example is published twice: a lightweight `static` surface (pre-rendered
+# geometry + poster, the default the docs embed) and a `customizer` surface (the
+# live in-browser compiler) for the per-embed "Customize" upgrade. The live
+# surfaces share one runtime (multi-target publish).
+#
+# The customizer targets use projectRoot + entry because the examples are
+# multi-file: they `use <../../tess.scad>`, which includes src/. pages.yml
+# stages that tree into publish-staging/ (everything under projectRoot becomes
+# public), and the runtime hydrates it at boot (openscad-web >= 0.6).
+
+site:
+  # Mount models into the Jekyll build output so they deploy with the site.
+  outDir: docs/_site
+
+targets:
+  - surface: static
+    geometry: ./rendered/hexagons_radial.off
+    poster: ./rendered/hexagons_radial.png
+    mountPath: /models/hexagons-radial/
+    title: Radial hexagons
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/hexagons/hexagons_radial_tess_example.scad
+    surface: customizer
+    mountPath: /models/hexagons-radial-live/
+    controls: true
+    download: true
+    title: Radial hexagons (interactive)
+
+  - surface: static
+    geometry: ./rendered/hexagons_rect.off
+    poster: ./rendered/hexagons_rect.png
+    mountPath: /models/hexagons-rect/
+    title: Rectangular hexagons
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/hexagons/hexagons_rect_tess_example.scad
+    surface: customizer
+    mountPath: /models/hexagons-rect-live/
+    controls: true
+    download: true
+    title: Rectangular hexagons (interactive)
+
+  - surface: static
+    geometry: ./rendered/squares_radial.off
+    poster: ./rendered/squares_radial.png
+    mountPath: /models/squares-radial/
+    title: Radial squares
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/squares/squares_radial_tess_example.scad
+    surface: customizer
+    mountPath: /models/squares-radial-live/
+    controls: true
+    download: true
+    title: Radial squares (interactive)
+
+  - surface: static
+    geometry: ./rendered/squares_rect.off
+    poster: ./rendered/squares_rect.png
+    mountPath: /models/squares-rect/
+    title: Rectangular squares
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/squares/squares_rect_tess_example.scad
+    surface: customizer
+    mountPath: /models/squares-rect-live/
+    controls: true
+    download: true
+    title: Rectangular squares (interactive)
+
+  - surface: static
+    geometry: ./rendered/triangles_radial.off
+    poster: ./rendered/triangles_radial.png
+    mountPath: /models/triangles-radial/
+    title: Radial triangles
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/triangles/triangles_radial_tess_example.scad
+    surface: customizer
+    mountPath: /models/triangles-radial-live/
+    controls: true
+    download: true
+    title: Radial triangles (interactive)
+
+  - surface: static
+    geometry: ./rendered/triangles_rect.off
+    poster: ./rendered/triangles_rect.png
+    mountPath: /models/triangles-rect/
+    title: Rectangular triangles
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/triangles/triangles_rect_tess_example.scad
+    surface: customizer
+    mountPath: /models/triangles-rect-live/
+    controls: true
+    download: true
+    title: Rectangular triangles (interactive)
+
+  - surface: static
+    geometry: ./rendered/tess_4_8_8.off
+    poster: ./rendered/tess_4_8_8.png
+    mountPath: /models/tess-4-8-8/
+    title: 4.8.8 tessellation
+
+  - projectRoot: ./publish-staging
+    entry: ./examples/tess_4_8_8/tess_4_8_8_tess_example.scad
+    surface: customizer
+    mountPath: /models/tess-4-8-8-live/
+    controls: true
+    download: true
+    title: 4.8.8 tessellation (interactive)

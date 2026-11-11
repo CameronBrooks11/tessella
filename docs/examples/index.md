@@ -16,12 +16,9 @@ Every example follows the same outline:
 3. Compute the vertices and draw them with `generic_poly()`, extruded and coloured.
 4. Label the centres with `print_points()`.
 
-The images below look straight down on each example. They were produced with:
-
-```sh
-openscad examples/hexagons/hexagons_radial_tess_example.scad -o hexagons_radial.png \
-  --imgsize=800,600 --camera=0,0,0,0,0,0,0 --projection=o --viewall --autocenter
-```
+On the [documentation site](https://cameronbrooks11.github.io/tessella/examples/) each example below is an embedded
+model. Click the picture to load a 3D view you can rotate, and **Customize (live)** to change the example's
+parameters in the browser. On GitHub the embeds show as `include` lines.
 
 ## Hexagons
 
@@ -29,7 +26,7 @@ openscad examples/hexagons/hexagons_radial_tess_example.scad -o hexagons_radial.
 
 [`examples/hexagons/hexagons_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/hexagons/hexagons_radial_tess_example.scad)
 
-<img src="../assets/examples/hexagons_radial.png" alt="Five levels of hexagons with a wedge removed, labelled with their coordinates" height="340">
+{% include openscad.html model="hexagons-radial" live="hexagons-radial-live" title="Radial hexagons" %}
 
 Five levels of hexagons of radius 10, drawn at radius 9 to leave a gap. Eleven centres are filtered out to cut a
 wedge from the middle to the top edge. It shows:
@@ -42,7 +39,7 @@ wedge from the middle to the top edge. It shows:
 
 [`examples/hexagons/hexagons_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/hexagons/hexagons_rect_tess_example.scad)
 
-<img src="../assets/examples/hexagons_rect.png" alt="A rectangular hexagon layout with tiles removed from two corners" height="340">
+{% include openscad.html model="hexagons-rect" live="hexagons-rect-live" title="Rectangular hexagons" %}
 
 Five rows of six hexagons, with tiles removed from the left and right edges to change the outline.
 
@@ -52,7 +49,7 @@ Five rows of six hexagons, with tiles removed from the left and right edges to c
 
 [`examples/squares/squares_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/squares/squares_radial_tess_example.scad)
 
-<img src="../assets/examples/squares_radial.png" alt="Five levels of squares in staggered rows, with tiles removed near the top" height="340">
+{% include openscad.html model="squares-radial" live="squares-radial-live" title="Radial squares" %}
 
 Five levels of squares of side 10 with no gap. The rows are staggered; see
 [Layouts](../usage/layouts.md#radial).
@@ -61,7 +58,7 @@ Five levels of squares of side 10 with no gap. The rows are staggered; see
 
 [`examples/squares/squares_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/squares/squares_rect_tess_example.scad)
 
-<img src="../assets/examples/squares_rect.png" alt="A 9 by 6 grid of squares with alternate columns partly removed" height="340">
+{% include openscad.html model="squares-rect" live="squares-rect-live" title="Rectangular squares" %}
 
 A 9 × 6 grid with every other column removed above the bottom row, leaving a comb.
 
@@ -74,7 +71,7 @@ them.
 
 [`examples/triangles/triangles_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/triangles/triangles_radial_tess_example.scad)
 
-<img src="../assets/examples/triangles_radial.png" alt="Sixteen levels of triangles with the four central triangles removed" height="340">
+{% include openscad.html model="triangles-radial" live="triangles-radial-live" title="Radial triangles" %}
 
 Sixteen levels, 361 triangles, with the four at the centre removed. It passes `angular_offset = 30, rect = false` to
 `triangle_vertices()`, which radial centres need.
@@ -83,7 +80,7 @@ Sixteen levels, 361 triangles, with the four at the centre removed. It passes `a
 
 [`examples/triangles/triangles_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/triangles/triangles_rect_tess_example.scad)
 
-<img src="../assets/examples/triangles_rect.png" alt="A rectangular triangle layout with a zigzag band removed" height="340">
+{% include openscad.html model="triangles-rect" live="triangles-rect-live" title="Rectangular triangles" %}
 
 Fifteen rows of nine triangles with a zigzag band removed from the left edge to the middle.
 
@@ -91,7 +88,7 @@ Fifteen rows of nine triangles with a zigzag band removed from the left edge to 
 
 [`examples/tess_4_8_8/tess_4_8_8_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/tess_4_8_8/tess_4_8_8_tess_example.scad)
 
-<img src="../assets/examples/tess_4_8_8.png" alt="A 7 by 7 grid of octagons with squares in the gaps, and a hole in the middle" height="340">
+{% include openscad.html model="tess-4-8-8" live="tess-4-8-8-live" title="4.8.8 tessellation" %}
 
 A 7 × 7 grid of octagons and the 6 × 6 squares between them. It shows:
 
@@ -99,6 +96,16 @@ A 7 × 7 grid of octagons and the 6 × 6 squares between them. It shows:
   around the centre
 - the squares drawn with `angular_offset = 0`
 - a different colour scheme and opacity for each kind of tile
+
+## Images in the other pages
+
+The pictures in [Layouts](../usage/layouts.md) and the [Reference](../reference/index.md) look straight down on
+these same examples. They were produced with:
+
+```sh
+openscad examples/hexagons/hexagons_radial_tess_example.scad -o hexagons_radial.png \
+  --imgsize=800,600 --camera=0,0,0,0,0,0,0 --projection=o --viewall --autocenter
+```
 
 ## Known issues
 

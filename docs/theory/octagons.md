@@ -1,6 +1,7 @@
 ---
 title: Octagons
 parent: Theory
+math: true
 nav_order: 2
 ---
 
@@ -36,7 +37,7 @@ $$
 
 ### Diagonal d
 
-$ABC$ is a right triangle with the right angle at $A$. Its legs are the width, $|AB| = w$, and a side, $|AC| = s$.
+$ABC$ is a right triangle with the right angle at $A$. Its legs are the width, $AB = w$, and a side, $AC = s$.
 Its hypotenuse is the diagonal:
 
 $$
@@ -84,23 +85,23 @@ The chord $AC$ joins two corners that are two sides apart. In triangle $ABC$ the
 and the angle between them is the octagon's interior angle, 135°. By the law of cosines:
 
 $$
-|AC|^2 = 2s^2 - 2s^2\cos(135^\circ)
+AC^2 = 2s^2 - 2s^2\cos(135^\circ)
 $$
 
 Since $\cos(135^\circ) = -\frac{\sqrt{2}}{2}$,
 
 $$
-|AC| = s\sqrt{2 + \sqrt{2}}
+AC = s\sqrt{2 + \sqrt{2}}
 $$
 
 Let $M$ be the midpoint of $AC$. $BM$ is perpendicular to $AC$, and in the right triangle $ABM$:
 
 $$
-|BM|^2 + \left(\frac{|AC|}{2}\right)^2 = s^2
+BM^2 + \left(\frac{AC}{2}\right)^2 = s^2
 $$
 
 $$
-|BM| = \sqrt{s^2 - \frac{s^2(2 + \sqrt{2})}{4}} = \frac{s}{2}\sqrt{2 - \sqrt{2}}
+BM = \sqrt{s^2 - \frac{s^2(2 + \sqrt{2})}{4}} = \frac{s}{2}\sqrt{2 - \sqrt{2}}
 $$
 
 So the chord is $y = s\sqrt{2 + \sqrt{2}}$ and the height of the corner above it is
