@@ -32,7 +32,8 @@ hexagon toward +X. The first centre is at the origin. The result has `n * m` poi
 use <tessella/tess.scad>
 
 echo(hexagons_centers_rect(10, 3, 2));
-// ECHO: [[0, 0], [8.66025, 15], [17.3205, 0], [25.9808, 15], [34.641, 0], [43.3013, 15]]
+// ECHO: [[0, 0], [8.66025, 15], [17.3205, 0], [25.9808, 15], [34.641, 0],
+//        [43.3013, 15]]
 ```
 
 <img src="../assets/examples/hexagons_rect.png" alt="A rectangular hexagon layout with tiles removed from two corners" height="300">
@@ -57,7 +58,8 @@ levels 1 to 5.
 use <tessella/tess.scad>
 
 echo(hexagons_centers_radial(10, 2));
-// ECHO: [[-17.3205, 0], [0, 0], [17.3205, 0], [-8.66025, 15], [8.66025, 15], [-8.66025, -15], [8.66025, -15]]
+// ECHO: [[-17.3205, 0], [0, 0], [17.3205, 0], [-8.66025, 15], [8.66025, 15],
+//        [-8.66025, -15], [8.66025, -15]]
 ```
 
 <img src="../assets/examples/hexagons_radial.png" alt="Five levels of hexagons with a wedge removed" height="300">
@@ -86,7 +88,8 @@ hexagons is `sqrt(3)` times the difference.
 use <tessella/tess.scad>
 
 echo(hexagons_vertices(10, [[0, 0]]));
-// ECHO: [[[8.66025, 5], [0, 10], [-8.66025, 5], [-8.66025, -5], [0, -10], [8.66025, -5]]]
+// ECHO: [[[8.66025, 5], [0, 10], [-8.66025, 5], [-8.66025, -5], [0, -10],
+//        [8.66025, -5]]]
 ```
 
 Render with `paths = [[0, 1, 2, 3, 4, 5, 0]]`.

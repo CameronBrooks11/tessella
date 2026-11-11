@@ -15,9 +15,11 @@ use <tessella/tess.scad>
 side = 10;
 
 all_centers = squares_centers_rect(side, 5, 5);
-centers = filter_center_points(all_centers, [[20, 20], [10, 20], [30, 20], [20, 10], [20, 30]]);
+removed = [[20, 20], [10, 20], [30, 20], [20, 10], [20, 30]];
+centers = filter_center_points(all_centers, removed);
 
-generic_poly(vertices = squares_vertices(side - 1, centers), paths = [[0, 1, 2, 3, 0]]);
+vertices = squares_vertices(side - 1, centers);
+generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 0]]);
 ```
 
 This cuts a plus-shaped hole in a 5 × 5 grid.
@@ -36,14 +38,16 @@ use <tessella/tess.scad>
 centers = hexagons_centers_radial(radius = 10, levels = 2);
 echo(centers);
 
-generic_poly(vertices = hexagons_vertices(9, centers), paths = [[0, 1, 2, 3, 4, 5, 0]]);
+vertices = hexagons_vertices(9, centers);
+generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]]);
 print_points(centers, text_size = 1.5, pointD = 0.5, point_color = "Red");
 ```
 
 The console shows:
 
 ```text
-ECHO: [[-17.3205, 0], [0, 0], [17.3205, 0], [-8.66025, 15], [8.66025, 15], [-8.66025, -15], [8.66025, -15]]
+ECHO: [[-17.3205, 0], [0, 0], [17.3205, 0], [-8.66025, 15], [8.66025, 15],
+       [-8.66025, -15], [8.66025, -15]]
 ```
 
 ## Tolerance
@@ -79,9 +83,11 @@ use <tessella/tess.scad>
 radius = 10;
 
 // keep only the hexagons within 45 units of the point [95, 80]
-centers = [for (c = hexagons_centers_rect(radius, 12, 12)) if (norm(c - [95, 80]) < 45) c];
+all_centers = hexagons_centers_rect(radius, 12, 12);
+centers = [for (c = all_centers) if (norm(c - [95, 80]) < 45) c];
 
-generic_poly(vertices = hexagons_vertices(radius - 1, centers), paths = [[0, 1, 2, 3, 4, 5, 0]]);
+vertices = hexagons_vertices(radius - 1, centers);
+generic_poly(vertices = vertices, paths = [[0, 1, 2, 3, 4, 5, 0]]);
 ```
 
 ## Filter before the vertices

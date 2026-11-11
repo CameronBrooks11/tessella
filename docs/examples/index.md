@@ -103,8 +103,9 @@ The pictures in [Layouts](../usage/layouts.md) and the [Reference](../reference/
 these same examples. They were produced with:
 
 ```sh
-openscad examples/hexagons/hexagons_radial_tess_example.scad -o hexagons_radial.png \
-  --imgsize=800,600 --camera=0,0,0,0,0,0,0 --projection=o --viewall --autocenter
+openscad examples/hexagons/hexagons_radial_tess_example.scad \
+  -o hexagons_radial.png --imgsize=800,600 \
+  --camera=0,0,0,0,0,0,0 --projection=o --viewall --autocenter
 ```
 
 ## Known issues

@@ -34,11 +34,19 @@ sq_centers = squares_8_8_centers_rect(radius, n, m);
 
 side_length = (radius * 2) / sqrt(4 + 2 * sqrt(2));
 
-generic_poly(vertices = octagons_vertices(radius, oct_centers), paths = [[0, 1, 2, 3, 4, 5, 6, 7, 0]],
-             centers = oct_centers, color_scheme = "scheme2");
+generic_poly(
+    vertices = octagons_vertices(radius, oct_centers),
+    paths = [[0, 1, 2, 3, 4, 5, 6, 7, 0]],
+    centers = oct_centers,
+    color_scheme = "scheme2"
+);
 
-generic_poly(vertices = squares_vertices(side_length, sq_centers, angular_offset = 0), paths = [[0, 1, 2, 3, 0]],
-             centers = sq_centers, color_scheme = "scheme1");
+generic_poly(
+    vertices = squares_vertices(side_length, sq_centers, angular_offset = 0),
+    paths = [[0, 1, 2, 3, 0]],
+    centers = sq_centers,
+    color_scheme = "scheme1"
+);
 ```
 
 The squares are drawn with `squares_vertices()` from [Squares](squares.md), with `angular_offset = 0`. The gap
@@ -89,7 +97,8 @@ result has `(n - 1) * (m - 1)` points, and is empty when `n` or `m` is 1.
 use <tessella/tess.scad>
 
 echo(squares_8_8_centers_rect(10, 3, 3));
-// ECHO: [[9.2388, 9.2388], [9.2388, 27.7164], [27.7164, 9.2388], [27.7164, 27.7164]]
+// ECHO: [[9.2388, 9.2388], [9.2388, 27.7164], [27.7164, 9.2388],
+//        [27.7164, 27.7164]]
 ```
 
 ## octagons_vertices

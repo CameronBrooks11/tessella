@@ -12,7 +12,8 @@ functions return.
 ## generic_poly
 
 ```scad
-generic_poly(vertices, paths, centers = undef, color_scheme = undef, alpha = 1, extrude = undef)
+generic_poly(vertices, paths, centers = undef, color_scheme = undef, alpha = 1,
+             extrude = undef)
 ```
 
 Draws one polygon for each entry in `vertices`.
@@ -35,8 +36,14 @@ use <tessella/tess.scad>
 
 centers = squares_centers_rect(10, 4, 3);
 
-generic_poly(vertices = squares_vertices(9, centers), paths = [[0, 1, 2, 3, 0]], centers = centers,
-             color_scheme = "scheme4", alpha = 0.6, extrude = 3);
+generic_poly(
+    vertices = squares_vertices(9, centers),
+    paths = [[0, 1, 2, 3, 0]],
+    centers = centers,
+    color_scheme = "scheme4",
+    alpha = 0.6,
+    extrude = 3
+);
 ```
 
 [Rendering](../usage/rendering.md) has more.
@@ -44,7 +51,8 @@ generic_poly(vertices = squares_vertices(9, centers), paths = [[0, 1, 2, 3, 0]],
 ## print_points
 
 ```scad
-print_points(points, text_size = 1, color = [0.1, 0.1, 0.1], pointD = undef, point_color = [0.1, 0.1, 0.1], fn = 8)
+print_points(points, text_size = 1, color = [0.1, 0.1, 0.1], pointD = undef,
+             point_color = [0.1, 0.1, 0.1], fn = 8)
 ```
 
 Labels each point with its coordinates and marks it with a sphere.
@@ -63,7 +71,13 @@ The label is centred `2 * pointD` beyond the point in Y and raised `2 * pointD` 
 ```scad
 use <tessella/tess.scad>
 
-print_points(hexagons_centers_radial(10, 2), text_size = 1.5, color = "Black", pointD = 0.5, point_color = "Red");
+print_points(
+    hexagons_centers_radial(10, 2),
+    text_size = 1.5,
+    color = "Black",
+    pointD = 0.5,
+    point_color = "Red"
+);
 ```
 
 ### Known issues

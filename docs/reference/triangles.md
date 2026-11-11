@@ -35,7 +35,8 @@ result has `n * m` points.
 use <tessella/tess.scad>
 
 echo(triangles_centers_rect(10, 3, 2));
-// ECHO: [[0, 0], [8.66025, 0], [17.3205, 0], [2.88675, 5], [11.547, 5], [20.2073, 5]]
+// ECHO: [[0, 0], [8.66025, 0], [17.3205, 0], [2.88675, 5], [11.547, 5],
+//        [20.2073, 5]]
 ```
 
 <img src="../assets/examples/triangles_rect.png" alt="A rectangular triangle layout with a zigzag band removed" height="300">
@@ -93,12 +94,18 @@ use <tessella/tess.scad>
 side = 10;
 
 rect_centers = triangles_centers_rect(side, 6, 8);
-generic_poly(vertices = triangle_vertices(side, rect_centers), paths = [[0, 1, 2, 0]]);
+rect_vertices = triangle_vertices(side, rect_centers);
+generic_poly(vertices = rect_vertices, paths = [[0, 1, 2, 0]]);
 
 radial_centers = triangles_centers_radial(side, 5);
+radial_vertices = triangle_vertices(
+    side,
+    radial_centers,
+    angular_offset = 30,
+    rect = false
+);
 translate([90, 30, 0])
-    generic_poly(vertices = triangle_vertices(side, radial_centers, angular_offset = 30, rect = false),
-                 paths = [[0, 1, 2, 0]]);
+    generic_poly(vertices = radial_vertices, paths = [[0, 1, 2, 0]]);
 ```
 
 Pass a `side` smaller than the one the centres were laid out with to leave a gap. The gap between neighbouring
