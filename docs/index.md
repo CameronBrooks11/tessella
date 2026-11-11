@@ -6,6 +6,8 @@ nav_order: 1
 
 # Tessella
 
+![Tessella](assets/logo.png)
+
 Tessella is an OpenSCAD library for regular and semi-regular tessellations. It computes where the tiles of a pattern
 go and what their outlines are, as plain lists of points, and leaves what to do with them to you.
 

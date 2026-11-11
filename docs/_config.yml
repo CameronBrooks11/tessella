@@ -22,7 +22,6 @@ exclude:
   - Gemfile.lock
   - vendor
   - hexagon_diag.ipynb # source of a diagram, not a page
-  - assets/logo_strip_v1.png # not linked from any page
 
 # Enable or disable the site search
 # Supports true (default) or false

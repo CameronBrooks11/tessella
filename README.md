@@ -1,5 +1,7 @@
 # Tessella
 
+![Tessella](docs/assets/logo.png)
+
 An OpenSCAD library for generating regular and semi-regular tessellations, providing tools to design intricate tiling patterns with polygons.
 
 <img src="docs/assets/examples/hexagons_radial.png" alt="A radial hexagon tessellation" height="300"><img src="docs/assets/examples/tess_4_8_8.png" alt="A 4.8.8 tessellation of octagons and squares" height="300">
