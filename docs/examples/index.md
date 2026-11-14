@@ -26,7 +26,7 @@ parameters in the browser. On GitHub the embeds show as `include` lines.
 
 [`examples/hexagons/hexagons_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/hexagons/hexagons_radial_tess_example.scad)
 
-{% include openscad.html model="hexagons-radial" live="hexagons-radial-live" title="Radial hexagons" %}
+{% include openscad.html model="hexagons-hexagons-radial-tess-example" live="hexagons-hexagons-radial-tess-example-live" title="Radial hexagons" %}
 
 Five levels of hexagons of radius 10, drawn at radius 9 to leave a gap. Eleven centres are filtered out to cut a
 wedge from the middle to the top edge. It shows:
@@ -39,7 +39,7 @@ wedge from the middle to the top edge. It shows:
 
 [`examples/hexagons/hexagons_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/hexagons/hexagons_rect_tess_example.scad)
 
-{% include openscad.html model="hexagons-rect" live="hexagons-rect-live" title="Rectangular hexagons" %}
+{% include openscad.html model="hexagons-hexagons-rect-tess-example" live="hexagons-hexagons-rect-tess-example-live" title="Rectangular hexagons" %}
 
 Five rows of six hexagons, with tiles removed from the left and right edges to change the outline.
 
@@ -49,7 +49,7 @@ Five rows of six hexagons, with tiles removed from the left and right edges to c
 
 [`examples/squares/squares_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/squares/squares_radial_tess_example.scad)
 
-{% include openscad.html model="squares-radial" live="squares-radial-live" title="Radial squares" %}
+{% include openscad.html model="squares-squares-radial-tess-example" live="squares-squares-radial-tess-example-live" title="Radial squares" %}
 
 Five levels of squares of side 10 with no gap. The rows are staggered; see
 [Layouts](../usage/layouts.md#radial).
@@ -58,7 +58,7 @@ Five levels of squares of side 10 with no gap. The rows are staggered; see
 
 [`examples/squares/squares_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/squares/squares_rect_tess_example.scad)
 
-{% include openscad.html model="squares-rect" live="squares-rect-live" title="Rectangular squares" %}
+{% include openscad.html model="squares-squares-rect-tess-example" live="squares-squares-rect-tess-example-live" title="Rectangular squares" %}
 
 A 9 × 6 grid with every other column removed above the bottom row, leaving a comb.
 
@@ -71,7 +71,7 @@ them.
 
 [`examples/triangles/triangles_radial_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/triangles/triangles_radial_tess_example.scad)
 
-{% include openscad.html model="triangles-radial" live="triangles-radial-live" title="Radial triangles" %}
+{% include openscad.html model="triangles-triangles-radial-tess-example" live="triangles-triangles-radial-tess-example-live" title="Radial triangles" %}
 
 Sixteen levels, 361 triangles, with the four at the centre removed. It passes `angular_offset = 30, rect = false` to
 `triangle_vertices()`, which radial centres need.
@@ -80,7 +80,7 @@ Sixteen levels, 361 triangles, with the four at the centre removed. It passes `a
 
 [`examples/triangles/triangles_rect_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/triangles/triangles_rect_tess_example.scad)
 
-{% include openscad.html model="triangles-rect" live="triangles-rect-live" title="Rectangular triangles" %}
+{% include openscad.html model="triangles-triangles-rect-tess-example" live="triangles-triangles-rect-tess-example-live" title="Rectangular triangles" %}
 
 Fifteen rows of nine triangles with a zigzag band removed from the left edge to the middle.
 
@@ -88,7 +88,7 @@ Fifteen rows of nine triangles with a zigzag band removed from the left edge to 
 
 [`examples/tess_4_8_8/tess_4_8_8_tess_example.scad`](https://github.com/CameronBrooks11/tessella/blob/main/examples/tess_4_8_8/tess_4_8_8_tess_example.scad)
 
-{% include openscad.html model="tess-4-8-8" live="tess-4-8-8-live" title="4.8.8 tessellation" %}
+{% include openscad.html model="tess-4-8-8-tess-4-8-8-tess-example" live="tess-4-8-8-tess-4-8-8-tess-example-live" title="4.8.8 tessellation" %}
 
 A 7 × 7 grid of octagons and the 6 × 6 squares between them. It shows:
 
