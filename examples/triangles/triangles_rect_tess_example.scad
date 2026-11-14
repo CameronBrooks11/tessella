@@ -1,3 +1,6 @@
+// Rectangular triangles
+// Fifteen rows of nine triangles with a zigzag band removed from the left edge to the middle.
+
 use <../../tess.scad>;
 
 side = 20;      // Side length of each triangle

@@ -1,3 +1,6 @@
+// Rectangular hexagons
+// Five rows of six hexagons, with tiles removed from the left and right edges to change the outline.
+
 use <../../tess.scad>
 
 n = 6;          // Number of hexagons along x-axis in the rectangular tessellation

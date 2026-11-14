@@ -1,3 +1,6 @@
+// Rectangular squares
+// A 9 × 6 grid with every other column removed above the bottom row, leaving a comb.
+
 use <../../tess.scad>
 
 side = 10;      // Side length of each square

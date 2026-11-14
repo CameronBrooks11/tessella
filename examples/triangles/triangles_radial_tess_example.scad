@@ -1,3 +1,6 @@
+// Radial triangles
+// Sixteen levels, 361 triangles, with the four at the centre removed.
+
 use <../../tess.scad>
 
 side = 20;      // Side length of each triangle
