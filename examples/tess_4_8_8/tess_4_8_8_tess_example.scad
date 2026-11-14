@@ -1,3 +1,6 @@
+// 4.8.8 tessellation
+// A 7 × 7 grid of octagons and the 6 × 6 squares between them.
+
 use <../../tess.scad>;
 
 radius = 10;    // Radius of each octagon

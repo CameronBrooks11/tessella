@@ -1,3 +1,6 @@
+// Radial squares
+// Five levels of squares of side 10 with no gap.
+
 use <../../tess.scad>
 
 side = 10;      // Side length of each square

@@ -1,3 +1,6 @@
+// Radial hexagons
+// Five levels of hexagons of radius 10, drawn at radius 9 to leave a gap.
+
 use <../../tess.scad>
 
 lvls = 5;       // Number of 'levels' in the radial tessellation
