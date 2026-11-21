@@ -6,5 +6,4 @@
     hexagon, and two squares meet at each vertex.
 */
 
-
 include <../tessUtils.scad>;

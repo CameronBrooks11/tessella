@@ -3,9 +3,9 @@
 
 use <../../tess.scad>
 
-side = 20;      // Side length of each triangle
-spacing = 0;    // Spacing between triangles
-lvls = 16;      // Number of levels
+side = 20; // Side length of each triangle
+spacing = 0; // Spacing between triangles
+lvls = 16; // Number of levels
 extHeight = 10; // Extrusion height for triangles
 
 filter = true; // Enable or disable filtering
@@ -19,10 +19,10 @@ echo("Unfiltered Centers:", unfiltered_centers);
 
 // Define filter points for the radial tessellation
 filter_points_radial = [
-    [ 0, 0 ],
-    [ 10, 5.7735 ],
-    [ -10, 5.7735 ],
-    [ 0, -11.547 ],
+    [0, 0],
+    [10, 5.7735],
+    [-10, 5.7735],
+    [0, -11.547],
 ];
 
 // Filter the center points if filtering is enabled
@@ -33,16 +33,16 @@ echo("Filtered Centers:", filtered_centers);
 centers = filter ? filtered_centers : unfiltered_centers;
 
 // Generate vertices for the triangles
-vertices = triangle_vertices(side = side - spacing, centers = centers, angular_offset = 30, rect = false);
+vertices = triangle_vertices(side=side - spacing, centers=centers, angular_offset=30, rect=false);
 
 // Render the triangles
 generic_poly(
-    vertices = vertices,
-    paths = [[0, 1, 2, 0]], // Triangle paths
-    centers = centers,
-    color_scheme = "scheme2",
-    alpha = 0.7,
-    extrude = 3
+    vertices=vertices,
+    paths=[[0, 1, 2, 0]], // Triangle paths
+    centers=centers,
+    color_scheme="scheme2",
+    alpha=0.7,
+    extrude=3
 );
 // Note:
 // - The 'centers' parameter is used only for calculating the color scheme.
@@ -54,8 +54,7 @@ generic_poly(
 //   generic_poly(vertices = vertices, paths = [[0, 1, 2, 0]]);
 
 // Render points for debugging
-if (print_pts)
-{
-    translate([ 0, 0, extHeight ])
-        print_points(centers, text_size = 1, color = "Purple", pointD = 1, point_color = "Orange", fn = 12);
+if (print_pts) {
+    translate([0, 0, extHeight])
+        print_points(centers, text_size=1, color="Purple", pointD=1, point_color="Orange", fn=12);
 }

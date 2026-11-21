@@ -12,8 +12,8 @@ include <src/tessUtils.scad>
 
 // Import regular tessellation modules
 
-include <src/regular/hexagons.scad>;  // Contains hexagon tessellation functions & assets
-include <src/regular/squares.scad>;   // Contains square tessellation functions & assets
+include <src/regular/hexagons.scad>; // Contains hexagon tessellation functions & assets
+include <src/regular/squares.scad>; // Contains square tessellation functions & assets
 include <src/regular/triangles.scad>; // Contains triangle tessellation functions & assets
 
 // Import semi-regular (Archimedean) tessellation modules

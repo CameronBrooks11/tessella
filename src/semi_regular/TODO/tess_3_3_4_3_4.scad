@@ -6,5 +6,4 @@
     two squares alternate around each vertex.
 */
 
-
 include <../tessUtils.scad>;
