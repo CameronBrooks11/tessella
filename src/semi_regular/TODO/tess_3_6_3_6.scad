@@ -6,5 +6,4 @@
     and hexagons meet at each vertex.
 */
 
-
 include <../tessUtils.scad>;

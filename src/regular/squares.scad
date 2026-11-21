@@ -23,21 +23,25 @@ include <../tessUtils.scad>;
  * @param levels Number of levels (rows above the center, plus the center, plus rows below).
  * @return       An array of center points for squares.
  */
-function squares_centers_radial(side, levels) = let(
-    // Offsets for spacing
-    offset_x = side, // Horizontal spacing
-    offset_y = side, // Vertical spacing
+function squares_centers_radial(side, levels) =
+    let (
+        // Offsets for spacing
+        offset_x = side, // Horizontal spacing
+        offset_y = side, // Vertical spacing
 
-    // Generate rows from the center outward
-    // Row i = -(levels-1) to +(levels-1), where i=0 is the center row.
-    rows = [for (i = [-(levels - 1):(levels - 1)])
-            let(rowCount = (2 * levels - 1) - abs(i),   // Number of squares in the row
-                yOff = i * offset_y,                    // Vertical position of the row
+        // Generate rows from the center outward
+        // Row i = -(levels-1) to +(levels-1), where i=0 is the center row.
+        rows = [
+            for (i = [-(levels - 1):(levels - 1)])
+            let (
+                rowCount = (2 * levels - 1) - abs(i), // Number of squares in the row
+                yOff = i * offset_y, // Vertical position of the row
                 xStart = -(rowCount - 1) * offset_x / 2 // Horizontal start to center the row
-                ) [[xStart, yOff], rowCount]
-])
+            ) [[xStart, yOff], rowCount],
+        ]
+    )
     // For each row definition, generate square center points
-    [for (row = rows) for (j = [0:row[1] - 1])[row[0][0] + j * offset_x, row[0][1]]];
+    [for (row = rows) for (j = [0:row[1] - 1]) [row[0][0] + j * offset_x, row[0][1]]];
 
 /**
  * @brief Generates center points for a rectangular grid of squares (n x m).
@@ -50,7 +54,7 @@ function squares_centers_radial(side, levels) = let(
  * @return     An array of center points for squares.
  */
 function squares_centers_rect(side, n, m) =
-    let(offset_x = side, offset_y = side)[for (ix = [0:n - 1], iy = [0:m - 1])[ix * offset_x, iy *offset_y]];
+    let (offset_x = side, offset_y = side) [for (ix = [0:n - 1], iy = [0:m - 1]) [ix * offset_x, iy * offset_y]];
 
 /**
  * @brief Renders 2D squares at specified centers, with optional color gradient.
@@ -64,6 +68,14 @@ function squares_centers_rect(side, n, m) =
  * @param alpha         (Optional) Alpha transparency value.
  */
 
-function squares_vertices(side, centers, angular_offset = 45) = [for (
-    center = centers)[for (i = [0:3]) let(angle = i * 90 + angular_offset)[center[0] + side / sqrt(2) * cos(angle),
-                                                                           center[1] + side / sqrt(2) * sin(angle)]]];
+function squares_vertices(side, centers, angular_offset = 45) =
+    [
+        for (
+            center = centers
+        ) [
+            for (i = [0:3]) let (angle = i * 90 + angular_offset) [
+                    center[0] + side / sqrt(2) * cos(angle),
+                    center[1] + side / sqrt(2) * sin(angle),
+            ],
+        ],
+    ];

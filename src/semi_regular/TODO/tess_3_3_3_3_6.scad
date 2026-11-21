@@ -6,5 +6,4 @@
     where four triangles and one hexagon meet at each vertex.
 */
 
-
 include <../tessUtils.scad>;
